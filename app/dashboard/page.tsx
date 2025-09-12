@@ -13,7 +13,6 @@ import { Transaction, Category, Budget } from "@/lib/types";
 import { transactionStorage, categoryStorage, budgetStorage } from "@/lib/storage";
 import { 
   getFinancialSummary, 
-  getRecentTransactions, 
   getMonthlySpending,
   calculateBudgetProgress 
 } from "@/lib/finance-utils";
@@ -86,7 +85,6 @@ export default function DashboardPage() {
   }
 
   const financialSummary = getFinancialSummary(transactions);
-  const recentTransactions = getRecentTransactions(transactions);
   const monthlySpending = getMonthlySpending(transactions);
   const budgetProgress = calculateBudgetProgress(budgets, transactions);
 
@@ -165,10 +163,11 @@ export default function DashboardPage() {
 
               {/* Recent Transactions */}
               <RecentTransactions 
-                transactions={recentTransactions} 
+                transactions={transactions} 
                 onAddTransaction={() => { setEditingTransaction(undefined); setShowTransactionForm(true); }} 
                 onEditTransaction={handleEditTransaction}
                 onDeleteTransaction={handleDeleteTransaction}
+                initialLimit={5}
               />
             </>
           )}

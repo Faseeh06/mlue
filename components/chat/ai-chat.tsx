@@ -277,34 +277,38 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
 
       {/* Input */}
       <div className="p-4 border-t border-gray-200/30">
-        <div className="flex space-x-2">
+        <div className="rounded-full border border-gray-400/60 focus-within:border-gray-600 bg-gray-100 px-3 py-1 flex items-center">
           <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Tell me about your income or expenses..."
+            placeholder="Ask anything"
             disabled={isLoading}
             rows={2}
-            className="flex-1 border-gray-200/50 font-light text-xs leading-snug resize-none min-h-[52px]"
+            className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-0 focus:ring-0 ring-0 ring-offset-0 outline-none focus:outline-none shadow-none rounded-full font-light text-sm leading-snug resize-none min-h-[38px] max-h-[60px] py-0.5 placeholder:text-gray-500"
           />
-          <Button
-            onClick={toggleMic}
-            disabled={isLoading || !(typeof window !== 'undefined' && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition)))}
-            variant="outline"
-            className="border-gray-200/50"
-            title={!((typeof window !== 'undefined') && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition))) ? 'Speech recognition not supported' : (isRecording ? 'Stop and send' : 'Start voice input')}
-          >
-            {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-          </Button>
-          <Button
-            onClick={handleSendMessage}
-            disabled={!inputMessage.trim() || isLoading}
-            className="bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0"
-          >
-            <Send className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center space-x-1 pl-2">
+            <Button
+              onClick={toggleMic}
+              disabled={isLoading || !(typeof window !== 'undefined' && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition)))}
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0 hover:bg-gray-200 rounded-full"
+              title={!((typeof window !== 'undefined') && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition))) ? 'Speech recognition not supported' : (isRecording ? 'Stop and send' : 'Start voice input')}
+            >
+              {isRecording ? <MicOff className="h-3.5 w-3.5 text-gray-700" /> : <Mic className="h-3.5 w-3.5 text-gray-700" />}
+            </Button>
+            <Button
+              onClick={handleSendMessage}
+              disabled={!inputMessage.trim() || isLoading}
+              size="sm"
+              className="h-7 w-7 p-0 rounded-full bg-gray-800 hover:bg-gray-900 text-white border-0"
+              title="Send"
+            >
+              <Send className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
-        
       </div>
     </div>
   );

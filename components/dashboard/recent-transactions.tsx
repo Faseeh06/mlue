@@ -6,21 +6,32 @@ import { Button } from "@/components/ui/button";
 import { Transaction } from "@/lib/types";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import { ArrowUpRight, ArrowDownLeft, Plus, Pencil, Trash } from "lucide-react";
+import { useMemo, useState } from "react";
 
 interface RecentTransactionsProps {
   transactions: Transaction[];
   onAddTransaction: () => void;
   onEditTransaction?: (transaction: Transaction) => void;
   onDeleteTransaction?: (id: string) => void;
+  initialLimit?: number;
 }
 
-export function RecentTransactions({ transactions, onAddTransaction, onEditTransaction, onDeleteTransaction }: RecentTransactionsProps) {
+export function RecentTransactions({ transactions, onAddTransaction, onEditTransaction, onDeleteTransaction, initialLimit = 5 }: RecentTransactionsProps) {
+  const [showAll, setShowAll] = useState(false);
+
+  const sorted = useMemo(() => {
+    return [...transactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [transactions]);
+
+  const visible = showAll ? sorted : sorted.slice(0, initialLimit);
+  const canViewMore = !showAll && sorted.length > initialLimit;
+
   return (
     <Card className="col-span-full lg:col-span-2 bg-transparent border border-gray-200/50">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle className="font-light tracking-tight">RECENT TRANSACTIONS</CardTitle>
-          <CardDescription className="text-gray-600 font-light">Your latest financial activities</CardDescription>
+          <CardTitle className="font-light tracking-tight">TRANSACTIONS</CardTitle>
+          <CardDescription className="text-gray-600 font-light">Latest at the top</CardDescription>
         </div>
         <Button 
           onClick={onAddTransaction} 
@@ -32,7 +43,7 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
         </Button>
       </CardHeader>
       <CardContent>
-        {transactions.length === 0 ? (
+        {visible.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-600 font-light mb-4">No transactions yet</p>
             <Button 
@@ -46,7 +57,7 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
           </div>
         ) : (
           <div className="space-y-4">
-            {transactions.map((transaction) => (
+            {visible.map((transaction) => (
               <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-200/30 rounded-lg bg-transparent">
                 <div className="flex items-center space-x-4">
                   <div className={`p-2 rounded-full ${
@@ -103,6 +114,18 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
                 </div>
               </div>
             ))}
+
+            {canViewMore && (
+              <div className="flex justify-center pt-2">
+                <Button
+                  variant="outline"
+                  className="border-2"
+                  onClick={() => setShowAll(true)}
+                >
+                  View more
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
