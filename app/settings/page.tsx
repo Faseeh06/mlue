@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { preferencesStorage, storage } from "@/lib/storage";
+import LandingHeader from "@/components/common/landing-header";
 
 const currencies = [
   { code: "USD", label: "US Dollar" },
@@ -58,14 +59,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f8f8]">
-      <header className="border-b border-gray-200/50 bg-transparent">
-        <div className="container mx-auto px-4 py-4 flex items-center space-x-3">
-          <Link href="/dashboard" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <ArrowLeft className="h-5 w-5" />
-          </Link>
-          <h1 className="text-xl font-light tracking-tight">Settings</h1>
-        </div>
-      </header>
+      <LandingHeader backHref="/dashboard" />
 
       <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Currency */}

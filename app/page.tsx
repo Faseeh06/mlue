@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 export default function Page() {
   return (
@@ -10,20 +11,26 @@ export default function Page() {
           <div className="h-2 w-2 rounded-full bg-black"></div>
         </div>
         <div className="flex items-center space-x-6">
-          <button className="text-sm">EN</button>
-          <Link href="/contact" className="text-sm hover:underline">
-            CONTACT US
-          </Link>
-          <Link href="/settings" className="text-sm hover:underline">
-            SETTINGS
-          </Link>
           <Link href="/dashboard" className="text-sm hover:underline font-medium">
             DASHBOARD
           </Link>
-          <button className="flex flex-col space-y-1">
-            <span className="h-0.5 w-6 bg-black"></span>
-            <span className="h-0.5 w-6 bg-black"></span>
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex flex-col space-y-1" aria-label="Open menu">
+                <span className="h-0.5 w-6 bg-black"></span>
+                <span className="h-0.5 w-6 bg-black"></span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>EN</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/contact">Contact Us</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/settings">Settings</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
@@ -47,10 +54,7 @@ export default function Page() {
             <div className="max-w-md">
               <Link href="/dashboard">
                 <Button variant="outline" className="rounded-full border-2 px-8 hover:bg-gradient-to-r hover:from-orange-100 hover:to-pink-100 transition-all duration-300">
-                  <span className="relative">
-                    EXPLORE FINANCE APP
-                    <div className="absolute -left-4 -right-4 -top-4 -bottom-4 animate-spin-slow rounded-full border border-black opacity-50"></div>
-                  </span>
+                  <span className="relative">EXPLORE FINANCE APP</span>
                 </Button>
               </Link>
               <p className="mt-8 text-sm leading-relaxed text-gray-600">

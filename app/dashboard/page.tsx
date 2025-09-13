@@ -18,6 +18,7 @@ import {
 } from "@/lib/finance-utils";
 import { Wallet, Plus, Settings, Menu, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import LandingHeader from "@/components/common/landing-header";
 
 export default function DashboardPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -89,47 +90,12 @@ export default function DashboardPage() {
   const budgetProgress = calculateBudgetProgress(budgets, transactions);
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8]">
-      {/* Header */}
-      <header className="border-b border-gray-200/50 bg-transparent">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Link href="/" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-              <div className="p-2 bg-gradient-to-br from-pink-400 via-orange-300 to-yellow-200 rounded-lg">
-                <Wallet className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-light tracking-tight">MLUE FINANCE</h1>
-                <p className="text-sm text-gray-600 font-light">Personal Finance Manager</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button 
-                onClick={() => setShowTransactionForm(true)}
-                size="sm"
-                className="hidden sm:flex bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Transaction
-              </Button>
-              <Link href="/settings">
-                <Button variant="outline" size="sm" className="border-2">
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Button variant="ghost" size="sm" className="sm:hidden">
-                <Menu className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#f8f8f8] overflow-hidden">
+      {/* Header (reused from landing) */}
+      <LandingHeader backHref="/" />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6 overflow-y-auto scrollbar-hide">
         {/* Gradient blob */}
         <div
           className="fixed right-0 top-20 h-[300px] w-[300px] animate-pulse rounded-full bg-gradient-to-br from-pink-400 via-orange-300 to-yellow-200 opacity-30 blur-3xl pointer-events-none"
@@ -184,15 +150,17 @@ export default function DashboardPage() {
       />
 
       {/* Mobile Add Button */}
-      <div className="fixed bottom-6 right-6 sm:hidden">
-        <Button 
-          onClick={() => setShowTransactionForm(true)}
-          size="lg"
-          className="rounded-full shadow-lg bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0"
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
-      </div>
+      {currentView === 'full' && (
+        <div className="fixed bottom-6 right-6 sm:hidden">
+          <Button 
+            onClick={() => setShowTransactionForm(true)}
+            size="lg"
+            className="rounded-full shadow-lg bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0"
+          >
+            <Plus className="h-6 w-6" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

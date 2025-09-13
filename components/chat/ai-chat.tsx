@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChatMessage, financeAI } from '@/lib/gemini';
 import { Transaction } from '@/lib/types';
-import { transactionStorage } from '@/lib/storage';
+import { transactionStorage, storage } from '@/lib/storage';
 import { formatCurrency, formatDate } from '@/lib/finance-utils';
 import { Send, Bot, User, TrendingUp, TrendingDown, Mic, MicOff } from 'lucide-react';
 
@@ -26,6 +26,8 @@ declare global {
 interface AIChatProps {
   onTransactionAdded: (transaction: Transaction) => void;
 }
+
+const CHAT_STORAGE_KEY = 'mlue-finance-chat';
 
 export function AIChat({ onTransactionAdded }: AIChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -46,6 +48,34 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Load chat history on mount
+  useEffect(() => {
+    try {
+      const saved = storage.get<unknown>(CHAT_STORAGE_KEY, null as any);
+      if (saved && Array.isArray(saved)) {
+        const restored = (saved as any[]).map((m) => ({
+          ...m,
+          timestamp: m.timestamp ? new Date(m.timestamp) : new Date(),
+        })) as ChatMessage[];
+        if (restored.length > 0) {
+          setMessages(restored);
+        }
+      }
+    } catch {}
+  }, []);
+
+  // Persist chat history when messages change
+  useEffect(() => {
+    try {
+      const toSave = messages.slice(-100).map((m) => ({
+        ...m,
+        // Ensure Date is serialized
+        timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp,
+      }));
+      storage.set(CHAT_STORAGE_KEY, toSave);
+    } catch {}
+  }, [messages]);
 
   useEffect(() => {
     scrollToBottom();
@@ -139,7 +169,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     setIsLoading(true);
 
     try {
-      const aiResponse = await financeAI.processMessage(inputMessage, messages);
+      const aiResponse = await financeAI.processMessage(userMessage.content, messages);
       
       // If AI extracted transactions, save them
       if (aiResponse.transactions && aiResponse.transactions.length > 0) {
@@ -179,7 +209,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-[600px] bg-transparent border border-gray-200/50 rounded-lg">
+    <div className="flex flex-col h-[75vh] overflow-hidden bg-transparent border border-gray-200/50 rounded-lg">
       {/* Chat Header */}
       <div className="p-4 border-b border-gray-200/30">
         <div className="flex items-center space-x-3">
@@ -197,7 +227,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto scrollbar-hide p-4 space-y-4">
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[80%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
@@ -276,7 +306,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-gray-200/30">
+      <div className="p-3 border-t border-gray-200/30">
         <div className="rounded-full border border-gray-400/60 focus-within:border-gray-600 bg-gray-100 px-3 py-1 flex items-center">
           <Textarea
             value={inputMessage}

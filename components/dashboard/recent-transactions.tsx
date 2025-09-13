@@ -19,8 +19,23 @@ interface RecentTransactionsProps {
 export function RecentTransactions({ transactions, onAddTransaction, onEditTransaction, onDeleteTransaction, initialLimit = 5 }: RecentTransactionsProps) {
   const [showAll, setShowAll] = useState(false);
 
+  const parseIdTs = (id: string): number => {
+    const match = id.match(/^(\d{10,})/);
+    return match ? Number(match[1]) : 0;
+  };
+
   const sorted = useMemo(() => {
-    return [...transactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return [...transactions].sort((a, b) => {
+      const da = new Date(a.date).getTime();
+      const db = new Date(b.date).getTime();
+      if (db !== da) return db - da; // newer date first
+      // Same day: fall back to id numeric prefix (Date.now() in generateId)
+      const ia = parseIdTs(a.id);
+      const ib = parseIdTs(b.id);
+      if (ib !== ia) return ib - ia; // newer id first
+      // Final fallback: compare description to keep sort stable
+      return (b.description || "").localeCompare(a.description || "");
+    });
   }, [transactions]);
 
   const visible = showAll ? sorted : sorted.slice(0, initialLimit);
