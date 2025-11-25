@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link"
-import Orb from "@/components/common/orb"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
 
 export default function Page() {
   return (
@@ -27,18 +28,16 @@ export default function Page() {
         <div className="grid grid-cols-4 gap-0">
           <div className="p-8 border-r border-dotted border-gray-400/40">
             <Link href="/" className="text-2xl font-normal tracking-wide text-[#3d2817] hover:opacity-70 transition-opacity">
-              MLUE
+              LEDGER AI
             </Link>
           </div>
-          <div className="p-8 col-span-3 flex items-center justify-between border-r border-dotted border-gray-400/40">
-            <nav className="flex items-center gap-12 text-sm text-[#3d2817]">
-              <Link href="#features" className="hover:opacity-70 transition-opacity">ABILITIES</Link>
-              <Link href="/dashboard" className="hover:opacity-70 transition-opacity">DASHBOARD</Link>
-            </nav>
-            <div className="flex items-center gap-8">
-              <Link href="#how-it-works" className="text-sm text-[#3d2817] hover:opacity-70 transition-opacity">HOW IT WORKS</Link>
-              <Link href="/settings" className="text-sm text-[#3d2817] hover:opacity-70 transition-opacity">STAY CONNECTED</Link>
-            </div>
+           <div className="p-8 col-span-3 flex items-center justify-end border-r border-dotted border-gray-400/40">
+            <Link href="/dashboard">
+              <Button className="bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0 text-white">
+                DASHBOARD
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -46,21 +45,11 @@ export default function Page() {
       {/* Hero Section */}
       <main className="relative grid grid-cols-4 grid-rows-2 min-h-[calc(100vh-120px)]">
 
-        {/* Top Left - Tagline + Logo */}
-        <div className="p-12 border-r border-b border-dotted border-gray-400/40 flex flex-col items-start justify-start">
-          <div className="text-sm text-[#3d2817] font-light tracking-wide mb-16">
-            <div>INTELLIGENT</div>
-            <div>FINANCE MANAGEMENT</div>
-          </div>
-
-          {/* Interactive Orb */}
-          <div className="w-32 h-32 relative border border-orange-200/20 rounded-full bg-white">
-            <Orb
-              hue={30}
-              hoverIntensity={0.3}
-              rotateOnHover={true}
-              forceHoverState={false}
-            />
+        {/* Top Left - Tagline */}
+        <div className="p-12 border-r border-b border-dotted border-gray-400/40 flex flex-col items-start justify-center">
+          <div className="text-sm text-[#3d2817] font-light tracking-wide">
+            <div>SMART TRANSACTION</div>
+            <div>INTERPRETER</div>
           </div>
         </div>
 
@@ -68,17 +57,14 @@ export default function Page() {
         <div className="p-12 col-span-3 border-b border-dotted border-gray-400/40">
         </div>
 
-        {/* Bottom Left - Main Headline */}
+        {/* Bottom Left - Empty space */}
         <div className="p-12 border-r border-dotted border-gray-400/40 flex items-center">
-          <h1 className="text-6xl md:text-7xl font-light text-[#3d2817] leading-tight">
-            Meet Mlue
-          </h1>
         </div>
 
         {/* Bottom Right - Description */}
         <div className="p-12 col-span-3 flex items-center">
           <p className="text-xl md:text-2xl text-[#3d2817] leading-relaxed max-w-4xl">
-            Mlue redefines personal finance management, empowering you to track spending, protect your budget, and make smarter decisions—unlocking your <span className="text-[#e59866] font-semibold">financial potential.</span>
+            Transform plain-language transaction descriptions into structured ledger entries instantly. Our AI interprets your business transactions and shows exactly how they affect your accounts—<span className="text-[#e59866] font-semibold">no accounting knowledge required.</span>
           </p>
         </div>
       </main>

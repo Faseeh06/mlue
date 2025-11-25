@@ -5,14 +5,14 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Mlue Finance - Personal Finance Manager',
-  description: 'A modern Progressive Web App for managing your personal finances, budgets, and expenses',
+  title: 'Ledger AI - Smart Transaction Interpreter',
+  description: 'Convert plain-language business transactions into structured ledger entries instantly. AI-powered accounting for small businesses and freelancers.',
   generator: 'Next.js',
   manifest: '/manifest.json',
-  keywords: ['finance', 'budget', 'expenses', 'money management', 'PWA'],
-  authors: [{ name: 'Mlue Finance' }],
-  creator: 'Mlue Finance',
-  publisher: 'Mlue Finance',
+  keywords: ['accounting', 'ledger', 'bookkeeping', 'business transactions', 'AI', 'double-entry', 'debit credit'],
+  authors: [{ name: 'Ledger AI' }],
+  creator: 'Ledger AI',
+  publisher: 'Ledger AI',
   formatDetection: {
     email: false,
     address: false,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Mlue Finance',
+    title: 'Ledger AI',
   },
   other: {
     'mobile-web-app-capable': 'yes',

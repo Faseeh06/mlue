@@ -15,15 +15,15 @@ export function DashboardToggle({ currentView, onViewChange }: DashboardTogglePr
   const toggleButtons = [
     {
       id: 'chat',
-      label: 'AI Chat',
+      label: 'Interpreter',
       icon: MessageCircle,
-      description: 'Talk to AI'
+      description: 'Convert Transactions'
     },
     {
       id: 'full',
-      label: 'Dashboard',
+      label: 'Ledger View',
       icon: BarChart3,
-      description: 'Full View'
+      description: 'All Entries'
     }
   ];
 

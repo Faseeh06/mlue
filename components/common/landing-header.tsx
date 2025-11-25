@@ -11,7 +11,7 @@ interface LandingHeaderProps {
 export function LandingHeader({ backHref }: LandingHeaderProps) {
   const pathname = usePathname();
   const isDashboard = pathname === "/dashboard" || pathname?.startsWith("/dashboard/");
-  const rightLinkLabel = isDashboard ? "ADD FINANCES" : "DASHBOARD";
+  const rightLinkLabel = isDashboard ? "INTERPRET" : "TRY IT NOW";
 
   return (
     <header className="flex items-center justify-between p-6">

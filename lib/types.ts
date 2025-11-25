@@ -1,3 +1,9 @@
+export interface LedgerEntry {
+  account: string;
+  debit: number;
+  credit: number;
+}
+
 export interface Transaction {
   id: string;
   amount: number;
@@ -8,6 +14,8 @@ export interface Transaction {
   day?: string;
   userPrompt?: string;
   account?: string;
+  ledgerEntries?: LedgerEntry[];
+  interpretation?: string;
 }
 
 export interface Budget {

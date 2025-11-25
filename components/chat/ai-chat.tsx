@@ -34,7 +34,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     {
       id: '1',
       role: 'assistant',
-      content: 'Hi there, how can I help you?',
+      content: 'Hello! Describe any business transaction in plain language, and I\'ll convert it into structured ledger entries showing exactly how it affects your accounts.',
       timestamp: new Date(),
     }
   ]);
@@ -217,9 +217,9 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
             <Bot className="h-5 w-5 text-white" />
           </div>
           <div className="flex-1">
-            <h3 className="font-light tracking-tight">AI FINANCE ASSISTANT</h3>
+            <h3 className="font-light tracking-tight">TRANSACTION INTERPRETER</h3>
             <p className="text-sm text-gray-600 font-light">
-              {isLoading ? 'Thinking...' : 'Ready to help with your finances'}
+              {isLoading ? 'Interpreting...' : 'Convert transactions to ledger entries'}
             </p>
           </div>
           {/* Voice (TTS) removed */}
@@ -255,45 +255,85 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
               {message.transactions && message.transactions.length > 0 && (
                 <div className="mt-2 space-y-2">
                   {message.transactions.map((transaction) => (
-                    <Card key={transaction.id} className="p-3 bg-transparent border border-gray-200/30">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className={`p-1.5 rounded-full ${
-                            transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                          }`}>
-                            {transaction.type === 'income' ? (
-                              <TrendingUp className="h-3 w-3" />
-                            ) : (
-                              <TrendingDown className="h-3 w-3" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-sm font-light">{transaction.description}</p>
-                            <div className="flex items-center space-x-2 flex-wrap">
-                              <Badge variant="outline" className="text-xs">
-                                {transaction.category}
-                              </Badge>
-                              <span className="text-xs text-gray-600 font-light">
-                                {formatDate(transaction.date)}
-                              </span>
-                              {transaction.day && (
-                                <span className="text-xs text-gray-500 font-light">
-                                  {transaction.day}
-                                </span>
+                    <Card key={transaction.id} className="p-4 bg-white/80 border border-gray-300/50 shadow-sm">
+                      <div className="space-y-3">
+                        {/* Transaction Header */}
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start space-x-3 flex-1">
+                            <div className={`p-1.5 rounded-full ${
+                              transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'
+                            }`}>
+                              {transaction.type === 'income' ? (
+                                <TrendingUp className="h-4 w-4" />
+                              ) : (
+                                <TrendingDown className="h-4 w-4" />
                               )}
                             </div>
-                            {transaction.userPrompt && (
-                              <p className="text-xs text-gray-400 font-light mt-1 italic">
-                                "{transaction.userPrompt}"
-                              </p>
-                            )}
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900">{transaction.description}</p>
+                              <div className="flex items-center space-x-2 flex-wrap mt-1">
+                                <Badge variant="outline" className="text-xs">
+                                  {transaction.category}
+                                </Badge>
+                                <span className="text-xs text-gray-500 font-light">
+                                  {formatDate(transaction.date)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className={`font-semibold text-lg ${
+                            transaction.type === 'income' ? 'text-green-600' : 'text-orange-600'
+                          }`}>
+                            {formatCurrency(transaction.amount)}
                           </div>
                         </div>
-                        <div className={`font-light ${
-                          transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
-                        </div>
+
+                        {/* Interpretation */}
+                        {transaction.interpretation && (
+                          <div className="bg-blue-50 border border-blue-200 rounded-md p-2">
+                            <p className="text-xs text-blue-800 font-light leading-relaxed">
+                              💡 {transaction.interpretation}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Ledger Entries */}
+                        {transaction.ledgerEntries && transaction.ledgerEntries.length > 0 && (
+                          <div className="border-t border-gray-200 pt-2">
+                            <p className="text-xs font-semibold text-gray-700 mb-2">LEDGER ENTRIES:</p>
+                            <div className="bg-gray-50 rounded-md overflow-hidden">
+                              <table className="w-full text-xs">
+                                <thead className="bg-gray-100">
+                                  <tr>
+                                    <th className="text-left py-1.5 px-2 font-semibold text-gray-700">Account</th>
+                                    <th className="text-right py-1.5 px-2 font-semibold text-gray-700">Debit</th>
+                                    <th className="text-right py-1.5 px-2 font-semibold text-gray-700">Credit</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {transaction.ledgerEntries.map((entry, idx) => (
+                                    <tr key={idx} className="border-t border-gray-200">
+                                      <td className="py-1.5 px-2 font-light text-gray-800">{entry.account}</td>
+                                      <td className="text-right py-1.5 px-2 font-light text-gray-800">
+                                        {entry.debit > 0 ? formatCurrency(entry.debit) : '-'}
+                                      </td>
+                                      <td className="text-right py-1.5 px-2 font-light text-gray-800">
+                                        {entry.credit > 0 ? formatCurrency(entry.credit) : '-'}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* User Prompt */}
+                        {transaction.userPrompt && (
+                          <p className="text-xs text-gray-400 font-light italic border-t border-gray-200 pt-2">
+                            Original: "{transaction.userPrompt}"
+                          </p>
+                        )}
                       </div>
                     </Card>
                   ))}
@@ -312,7 +352,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Ask anything"
+            placeholder="Describe a transaction (e.g., 'Paid $500 to supplier for inventory')"
             disabled={isLoading}
             rows={2}
             className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-0 focus:ring-0 ring-0 ring-offset-0 outline-none focus:outline-none shadow-none rounded-full font-light text-sm leading-snug resize-none min-h-[38px] max-h-[60px] py-0.5 placeholder:text-gray-500"

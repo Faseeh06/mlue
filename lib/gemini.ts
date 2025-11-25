@@ -16,53 +16,70 @@ export interface ChatMessage {
 export class FinanceAI {
   private model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   
-  private systemPrompt = `You are a helpful AI finance assistant. Your job is to:
-1. Help users track their income and expenses through natural conversation
-2. Extract financial data from user messages and convert them into structured transaction data
-3. Provide insights about spending patterns and budgeting advice
-4. Respond in a friendly, conversational tone
+  private systemPrompt = `You are a Smart Transaction Interpreter AI for small businesses and freelancers. Your job is to:
+1. Convert plain-language transaction descriptions into structured ledger entries
+2. Show debit and credit impacts on different accounts using double-entry bookkeeping principles
+3. Provide clear interpretation of how transactions affect the books
+4. Make accounting accessible to users without accounting knowledge
 
-When a user mentions a financial transaction, always extract:
+When a user describes a business transaction, extract and interpret it with:
 - Amount (number)
-- Description (detailed description including location/vendor if mentioned)
+- Description (detailed description of the transaction)
 - Category (from the predefined list below)
-- Type (income or expense)
+- Type (income, expense, payment, receipt, purchase, etc.)
 - Date (use today's date: ${new Date().toISOString().split('T')[0]} if not specified)
 - Day (day of week: ${new Date().toLocaleDateString('en-US', { weekday: 'long' })})
 - UserPrompt (the original user message)
+- LedgerEntries (array showing debit and credit for each account affected)
+- Interpretation (simple explanation of the accounting impact)
 
-ALWAYS respond with valid JSON when extracting transactions:
+ALWAYS respond with valid JSON when interpreting transactions:
 {
-  "message": "Got it! I've recorded your expense/income.",
+  "message": "I've interpreted your transaction and created the ledger entries.",
   "transactions": [
     {
-      "amount": 25.50,
-      "description": "Coffee and breakfast at Starbucks",
-      "category": "Food & Dining",
+      "amount": 500,
+      "description": "Payment to ABC Suppliers for inventory",
+      "category": "Inventory Purchase",
       "type": "expense",
       "date": "${new Date().toISOString().split('T')[0]}",
       "day": "${new Date().toLocaleDateString('en-US', { weekday: 'long' })}",
-      "userPrompt": "I spent $25.50 on coffee and breakfast at Starbucks"
+      "userPrompt": "Paid $500 to ABC Suppliers for inventory",
+      "ledgerEntries": [
+        { "account": "Inventory", "debit": 500, "credit": 0 },
+        { "account": "Cash/Bank", "debit": 0, "credit": 500 }
+      ],
+      "interpretation": "This increases your Inventory (asset) and decreases your Cash (asset). Your total assets remain the same, but inventory goes up while cash goes down."
     }
   ]
 }
 
-If no financial transaction is mentioned, respond with:
+If no transaction is mentioned, respond with:
 {
-  "message": "Your conversational response here"
+  "message": "Describe a business transaction and I'll show you how it affects your accounts!"
 }
 
-Categories to use (pick the most appropriate):
-- Food & Dining
-- Transportation
-- Shopping
-- Entertainment
-- Bills & Utilities
-- Healthcare
-- Education
-- Salary
-- Freelance
-- Investment
+Common Account Types to use in ledger entries:
+- Cash/Bank
+- Accounts Receivable
+- Inventory
+- Equipment
+- Accounts Payable
+- Revenue/Sales
+- Cost of Goods Sold
+- Expenses
+- Owner's Equity
+
+Categories to use:
+- Inventory Purchase
+- Sales/Revenue
+- Client Payment
+- Supplier Payment
+- Equipment Purchase
+- Operating Expenses
+- Utility Bills
+- Salaries/Wages
+- Professional Services
 - Other`;
 
   async processMessage(userMessage: string, conversationHistory: ChatMessage[] = []): Promise<ChatMessage> {
@@ -75,30 +92,38 @@ Categories to use (pick the most appropriate):
         .map(msg => `${msg.role}: ${msg.content}`)
         .join('\n');
 
-      const fullPrompt = `Extract financial data from this message: "${userMessage}"
+      const fullPrompt = `Interpret this business transaction: "${userMessage}"
 
-If it mentions spending money or earning money, respond with this exact JSON format:
+Apply double-entry bookkeeping principles. Respond with this exact JSON format:
 {
-  "message": "Got it! I've recorded your transaction.",
+  "message": "I've interpreted your transaction.",
   "transactions": [
     {
-      "amount": 25.50,
-      "description": "detailed description here",
-      "category": "Food & Dining",
+      "amount": 500,
+      "description": "detailed description",
+      "category": "appropriate category",
       "type": "expense",
       "date": "${new Date().toISOString().split('T')[0]}",
       "day": "${new Date().toLocaleDateString('en-US', { weekday: 'long' })}",
-      "userPrompt": "${userMessage}"
+      "userPrompt": "${userMessage}",
+      "ledgerEntries": [
+        { "account": "Account Name 1", "debit": 500, "credit": 0 },
+        { "account": "Account Name 2", "debit": 0, "credit": 500 }
+      ],
+      "interpretation": "Brief explanation of how this affects the books"
     }
   ]
 }
 
-Categories: Food & Dining, Transportation, Shopping, Entertainment, Bills & Utilities, Healthcare, Education, Salary, Freelance, Investment, Other
-Type: "income" or "expense"
+Categories: Inventory Purchase, Sales/Revenue, Client Payment, Supplier Payment, Equipment Purchase, Operating Expenses, Utility Bills, Salaries/Wages, Professional Services, Other
 
-If no financial transaction, respond with:
+Account Types: Cash/Bank, Accounts Receivable, Inventory, Equipment, Accounts Payable, Revenue/Sales, Cost of Goods Sold, Expenses, Owner's Equity
+
+Remember: Total debits must equal total credits. For purchases/expenses: debit the asset/expense account, credit Cash/Bank. For sales/income: debit Cash/Bank or Accounts Receivable, credit Revenue.
+
+If no transaction mentioned, respond with:
 {
-  "message": "How can I help you with your finances?"
+  "message": "Describe a business transaction and I'll interpret it for you!"
 }
 
 Only return valid JSON.`;
@@ -143,6 +168,8 @@ Only return valid JSON.`;
             date: t.date || new Date().toISOString().split('T')[0],
             day: t.day || new Date().toLocaleDateString('en-US', { weekday: 'long' }),
             userPrompt: t.userPrompt || userMessage,
+            ledgerEntries: t.ledgerEntries || [],
+            interpretation: t.interpretation || '',
           }));
         }
       } catch (parseError) {
@@ -195,7 +222,7 @@ Only return valid JSON.`;
         `${t.type}: $${t.amount} - ${t.description} (${t.category})`
       ).join('\n');
 
-      const prompt = `Based on these recent transactions, provide brief financial insights and tips:
+      const prompt = `Based on these recent business transactions, provide brief bookkeeping insights:
 
 ${transactionSummary}
 
@@ -205,7 +232,7 @@ Keep your response conversational and under 100 words.`;
       return result.response.text();
     } catch (error) {
       console.error('Error getting insights:', error);
-      return 'I can help you track your finances! Just tell me about your income or expenses.';
+      return 'Describe a business transaction in plain language and I\'ll convert it to ledger entries for you!';
     }
   }
 }

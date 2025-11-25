@@ -1,7 +1,7 @@
 {
-  "name": "Mlue Finance - Personal Finance Manager",
-  "short_name": "Mlue Finance",
-  "description": "A modern Progressive Web App for managing your personal finances",
+  "name": "Ledger AI - Smart Transaction Interpreter",
+  "short_name": "Ledger AI",
+  "description": "AI-powered tool that converts plain-language business transactions into structured ledger entries",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -57,7 +57,7 @@
       "purpose": "maskable any"
     }
   ],
-  "categories": ["finance", "productivity", "utilities"],
+  "categories": ["business", "finance", "productivity", "accounting"],
   "screenshots": [
     {
       "src": "/screenshots/desktop.png",
