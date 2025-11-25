@@ -54,12 +54,15 @@ export default function DashboardPage() {
       transactionStorage.add(transaction);
     }
     setEditingTransaction(undefined);
+    setShowTransactionForm(false);
     loadData();
   };
 
   const handleTransactionFromAI = (transaction: Transaction) => {
-    // Transaction is already saved by AI chat, just reload data
+    // Transaction is already saved by AI chat, reload data to update all views
     loadData();
+    // Force re-render of financial summary
+    setTransactions(transactionStorage.getAll());
   };
 
   const handleEditTransaction = (transaction: Transaction) => {

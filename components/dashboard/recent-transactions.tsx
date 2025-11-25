@@ -67,20 +67,20 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
           className="bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add Transaction
+          Record Transaction
         </Button>
       </CardHeader>
       <CardContent>
         {visible.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-600 font-light mb-4">No transactions yet</p>
+            <p className="text-gray-600 font-light mb-4">No transactions recorded yet</p>
             <Button 
               onClick={onAddTransaction} 
               variant="outline"
               className="border-2 hover:bg-gradient-to-r hover:from-orange-100 hover:to-pink-100"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add Your First Transaction
+              Record Your First Transaction
             </Button>
           </div>
         ) : (

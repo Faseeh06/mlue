@@ -80,12 +80,12 @@ export function TransactionForm({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {transaction ? 'Edit Transaction' : 'Add Transaction'}
+            {transaction ? 'Edit Transaction' : 'Add Business Transaction'}
           </DialogTitle>
           <DialogDescription>
             {transaction 
-              ? 'Update your transaction details.' 
-              : 'Add a new income or expense transaction.'
+              ? 'Update your transaction details and ledger entries.' 
+              : 'Record a business transaction with automatic ledger entry generation.'
             }
           </DialogDescription>
         </DialogHeader>
@@ -99,11 +99,11 @@ export function TransactionForm({
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="expense" id="expense" />
-                <Label htmlFor="expense">Expense</Label>
+                <Label htmlFor="expense">Payment/Expense</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="income" id="income" />
-                <Label htmlFor="income">Income</Label>
+                <Label htmlFor="income">Receipt/Income</Label>
               </div>
             </RadioGroup>
           </div>
@@ -123,14 +123,18 @@ export function TransactionForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Transaction Description</Label>
             <Textarea
               id="description"
-              placeholder="Enter transaction description"
+              placeholder="e.g., 'Paid ABC Suppliers for inventory' or 'Received payment from client for services'"
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               required
+              rows={3}
             />
+            <p className="text-xs text-gray-500 font-light">
+              Describe the business transaction in plain language
+            </p>
           </div>
 
           <div className="space-y-2">

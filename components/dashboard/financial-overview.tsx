@@ -20,33 +20,33 @@ export function FinancialOverview({ summary }: FinancialOverviewProps) {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card className="bg-transparent border border-gray-200/50">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-light tracking-tight">TOTAL INCOME</CardTitle>
+          <CardTitle className="text-sm font-light tracking-tight">TOTAL REVENUE</CardTitle>
           <TrendingUp className="h-4 w-4 text-green-600" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-light bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
             {formatCurrency(totalIncome)}
           </div>
-          <p className="text-xs text-gray-600 font-light">This month</p>
+          <p className="text-xs text-gray-600 font-light">Business income this month</p>
         </CardContent>
       </Card>
 
       <Card className="bg-transparent border border-gray-200/50">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-light tracking-tight">TOTAL EXPENSES</CardTitle>
-          <TrendingDown className="h-4 w-4 text-red-600" />
+          <CardTitle className="text-sm font-light tracking-tight">TOTAL PAYMENTS</CardTitle>
+          <TrendingDown className="h-4 w-4 text-orange-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-light bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+          <div className="text-2xl font-light bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
             {formatCurrency(totalExpenses)}
           </div>
-          <p className="text-xs text-gray-600 font-light">This month</p>
+          <p className="text-xs text-gray-600 font-light">Business expenses this month</p>
         </CardContent>
       </Card>
 
       <Card className="bg-transparent border border-gray-200/50">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-light tracking-tight">NET BALANCE</CardTitle>
+          <CardTitle className="text-sm font-light tracking-tight">NET PROFIT/LOSS</CardTitle>
           <DollarSign className={`h-4 w-4 ${isPositiveBalance ? 'text-green-600' : 'text-red-600'}`} />
         </CardHeader>
         <CardContent>
@@ -54,7 +54,7 @@ export function FinancialOverview({ summary }: FinancialOverviewProps) {
             {formatCurrency(balance)}
           </div>
           <p className="text-xs text-gray-600 font-light">
-            {isPositiveBalance ? 'Surplus' : 'Deficit'} this month
+            {isPositiveBalance ? 'Profit' : 'Loss'} this month
           </p>
         </CardContent>
       </Card>

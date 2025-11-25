@@ -8,18 +8,22 @@ const STORAGE_KEYS = {
   PREFS: 'mlue-finance-preferences',
 };
 
-// Default categories
+// Default categories for business transactions
 export const DEFAULT_CATEGORIES: Category[] = [
-  { id: '1', name: 'Food & Dining', color: '#ef4444', icon: '🍽️', type: 'expense' },
-  { id: '2', name: 'Transportation', color: '#3b82f6', icon: '🚗', type: 'expense' },
-  { id: '3', name: 'Shopping', color: '#8b5cf6', icon: '🛍️', type: 'expense' },
-  { id: '4', name: 'Entertainment', color: '#f59e0b', icon: '🎬', type: 'expense' },
-  { id: '5', name: 'Bills & Utilities', color: '#6b7280', icon: '⚡', type: 'expense' },
-  { id: '6', name: 'Healthcare', color: '#10b981', icon: '🏥', type: 'expense' },
-  { id: '7', name: 'Education', color: '#06b6d4', icon: '📚', type: 'expense' },
-  { id: '8', name: 'Salary', color: '#22c55e', icon: '💰', type: 'income' },
-  { id: '9', name: 'Freelance', color: '#84cc16', icon: '💻', type: 'income' },
-  { id: '10', name: 'Investment', color: '#eab308', icon: '📈', type: 'income' },
+  // Expense/Payment categories
+  { id: '1', name: 'Inventory Purchase', color: '#ef4444', icon: '📦', type: 'expense' },
+  { id: '2', name: 'Supplier Payment', color: '#3b82f6', icon: '🏭', type: 'expense' },
+  { id: '3', name: 'Equipment Purchase', color: '#8b5cf6', icon: '🔧', type: 'expense' },
+  { id: '4', name: 'Operating Expenses', color: '#f59e0b', icon: '💼', type: 'expense' },
+  { id: '5', name: 'Utility Bills', color: '#6b7280', icon: '⚡', type: 'expense' },
+  { id: '6', name: 'Salaries/Wages', color: '#10b981', icon: '👥', type: 'expense' },
+  { id: '7', name: 'Professional Services', color: '#06b6d4', icon: '🎓', type: 'expense' },
+  { id: '8', name: 'Rent/Lease', color: '#ec4899', icon: '🏢', type: 'expense' },
+  // Income/Receipt categories
+  { id: '9', name: 'Sales/Revenue', color: '#22c55e', icon: '💰', type: 'income' },
+  { id: '10', name: 'Client Payment', color: '#84cc16', icon: '💳', type: 'income' },
+  { id: '11', name: 'Service Income', color: '#eab308', icon: '🛠️', type: 'income' },
+  { id: '12', name: 'Other Income', color: '#14b8a6', icon: '📈', type: 'income' },
 ];
 
 // Storage utility functions

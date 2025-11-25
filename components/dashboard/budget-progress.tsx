@@ -23,8 +23,8 @@ export function BudgetProgress({ budgets, onAddBudget }: BudgetProgressProps) {
     <Card className="col-span-full lg:col-span-1 bg-transparent border border-gray-200/50">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle className="font-light tracking-tight">BUDGET PROGRESS</CardTitle>
-          <CardDescription className="text-gray-600 font-light">Track your spending limits</CardDescription>
+          <CardTitle className="font-light tracking-tight">EXPENSE TRACKING</CardTitle>
+          <CardDescription className="text-gray-600 font-light">Monitor category spending limits</CardDescription>
         </div>
         <Button 
           onClick={onAddBudget} 
@@ -38,7 +38,7 @@ export function BudgetProgress({ budgets, onAddBudget }: BudgetProgressProps) {
       <CardContent>
         {budgets.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-600 font-light mb-4">No budgets set</p>
+            <p className="text-gray-600 font-light mb-4">No spending limits set</p>
             <Button 
               onClick={onAddBudget} 
               variant="outline" 
@@ -46,7 +46,7 @@ export function BudgetProgress({ budgets, onAddBudget }: BudgetProgressProps) {
               className="border-2 hover:bg-gradient-to-r hover:from-orange-100 hover:to-pink-100"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Create Budget
+              Set Limit
             </Button>
           </div>
         ) : (

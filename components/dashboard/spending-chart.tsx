@@ -23,8 +23,8 @@ export function SpendingChart({ data }: SpendingChartProps) {
   return (
     <Card className="col-span-full lg:col-span-2 bg-transparent border border-gray-200/50">
       <CardHeader>
-        <CardTitle className="font-light tracking-tight">MONTHLY OVERVIEW</CardTitle>
-        <CardDescription className="text-gray-600 font-light">Income vs Expenses over the last 6 months</CardDescription>
+        <CardTitle className="font-light tracking-tight">BUSINESS PERFORMANCE</CardTitle>
+        <CardDescription className="text-gray-600 font-light">Revenue vs Payments over the last 6 months</CardDescription>
       </CardHeader>
       <CardContent>
         {data.length === 0 ? (
@@ -68,13 +68,13 @@ export function SpendingChart({ data }: SpendingChartProps) {
               <Bar 
                 dataKey="income" 
                 fill="url(#incomeGradient)" 
-                name="Income"
+                name="Revenue"
                 radius={[2, 2, 0, 0]}
               />
               <Bar 
                 dataKey="expenses" 
                 fill="url(#expensesGradient)" 
-                name="Expenses"
+                name="Payments"
                 radius={[2, 2, 0, 0]}
               />
             </BarChart>
