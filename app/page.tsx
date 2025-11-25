@@ -43,29 +43,22 @@ export default function Page() {
       </header>
 
       {/* Hero Section */}
-      <main className="relative grid grid-cols-4 grid-rows-2 min-h-[calc(100vh-120px)]">
-
-        {/* Top Left - Tagline */}
-        <div className="p-12 border-r border-b border-dotted border-gray-400/40 flex flex-col items-start justify-center">
-          <div className="text-sm text-[#3d2817] font-light tracking-wide">
-            <div>SMART TRANSACTION</div>
-            <div>INTERPRETER</div>
-          </div>
-        </div>
-
-        {/* Top Right - Empty space */}
-        <div className="p-12 col-span-3 border-b border-dotted border-gray-400/40">
-        </div>
-
-        {/* Bottom Left - Empty space */}
-        <div className="p-12 border-r border-dotted border-gray-400/40 flex items-center">
-        </div>
-
-        {/* Bottom Right - Description */}
-        <div className="p-12 col-span-3 flex items-center">
-          <p className="text-xl md:text-2xl text-[#3d2817] leading-relaxed max-w-4xl">
+      <main className="relative flex items-center justify-center min-h-[calc(100vh-120px)] px-6">
+        <div className="max-w-5xl mx-auto text-center space-y-8">
+          <h1 className="text-5xl md:text-7xl font-light text-[#3d2817] leading-tight">
+            Smart Transaction Interpreter
+          </h1>
+          <p className="text-xl md:text-2xl text-[#3d2817]/80 leading-relaxed max-w-4xl mx-auto">
             Transform plain-language transaction descriptions into structured ledger entries instantly. Our AI interprets your business transactions and shows exactly how they affect your accounts—<span className="text-[#e59866] font-semibold">no accounting knowledge required.</span>
           </p>
+          <div className="pt-4">
+            <Link href="/dashboard">
+              <Button size="lg" className="bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0 text-white text-lg px-10 py-6">
+                Get Started
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </main>
     </div>
