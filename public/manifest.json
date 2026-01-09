@@ -1,6 +1,6 @@
 {
-  "name": "Mlue Finance - Personal Finance Manager",
-  "short_name": "Mlue Finance",
+  "name": "Mlue",
+  "short_name": "Mlue",
   "description": "A modern Progressive Web App for managing your personal finances",
   "start_url": "/",
   "display": "standalone",

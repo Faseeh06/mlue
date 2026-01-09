@@ -33,9 +33,6 @@ export default function Page() {
               <br />
               <em className="italic">effortlessly.</em>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-              Mlue makes personal finance simple. Track expenses, set budgets, and get AI-powered insights—all in one beautiful app.
-            </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/dashboard">
                 <Button size="lg" variant="outline" className="h-12 px-8 rounded-full border border-foreground/30 bg-transparent text-foreground hover:bg-transparent">

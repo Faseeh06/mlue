@@ -13,28 +13,28 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  title: 'Mlue Finance - Personal Finance Manager',
+  title: 'Mlue',
   description: 'A modern Progressive Web App for managing your personal finances, budgets, and expenses',
   generator: 'Next.js',
   manifest: '/manifest.json',
   keywords: ['finance', 'budget', 'expenses', 'money management', 'PWA'],
-  authors: [{ name: 'Mlue Finance' }],
-  creator: 'Mlue Finance',
-  publisher: 'Mlue Finance',
+  authors: [{ name: 'Mlue' }],
+  creator: 'Mlue',
+  publisher: 'Mlue',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   icons: {
-    icon: '/icons/icon-192x192.png',
-    shortcut: '/icons/icon-192x192.png',
-    apple: '/icons/icon-192x192.png',
+    icon: '/images/M_logo.png',
+    shortcut: '/images/M_logo.png',
+    apple: '/images/M_logo.png',
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Mlue Finance',
+    title: 'Mlue',
   },
   other: {
     'mobile-web-app-capable': 'yes',
