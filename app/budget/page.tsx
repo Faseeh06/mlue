@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ import LandingHeader from "@/components/common/landing-header";
 import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 
-export default function BudgetPage() {
+function BudgetPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const budgetId = searchParams.get('id');
@@ -478,6 +478,18 @@ export default function BudgetPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function BudgetPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-iris"></div>
+      </div>
+    }>
+      <BudgetPageContent />
+    </Suspense>
   );
 }
 

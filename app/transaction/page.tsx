@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ import LandingHeader from "@/components/common/landing-header";
 import { Plus, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function TransactionPage() {
+function TransactionPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const transactionId = searchParams.get('id');
@@ -280,6 +280,18 @@ export default function TransactionPage() {
         </Card>
       </main>
     </div>
+  );
+}
+
+export default function TransactionPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-iris"></div>
+      </div>
+    }>
+      <TransactionPageContent />
+    </Suspense>
   );
 }
 
