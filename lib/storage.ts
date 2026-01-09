@@ -9,6 +9,7 @@ const STORAGE_KEYS = {
   GEMINI_API_KEY: 'mlue-finance-gemini-api-key',
   GROQ_API_KEY: 'mlue-finance-groq-api-key',
   AI_MODEL: 'mlue-finance-ai-model',
+  VOICE_MODE: 'mlue-finance-voice-mode',
 };
 
 // Default categories
@@ -291,5 +292,17 @@ export const apiKeyStorage = {
   // Check if API key exists for current model
   hasForModel: (model: AIModel): boolean => {
     return model === 'groq' ? apiKeyStorage.hasGroq() : apiKeyStorage.has();
+  },
+};
+
+// Voice Mode preference
+export type VoiceMode = 'browser' | 'whisper';
+
+export const voiceModeStorage = {
+  get: (): VoiceMode => {
+    return storage.get<VoiceMode>(STORAGE_KEYS.VOICE_MODE, 'browser');
+  },
+  set: (mode: VoiceMode): boolean => {
+    return storage.set(STORAGE_KEYS.VOICE_MODE, mode);
   },
 };

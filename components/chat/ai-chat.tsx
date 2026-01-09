@@ -8,8 +8,9 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChatMessage } from '@/lib/gemini';
 import { Transaction } from '@/lib/types';
-import { transactionStorage, storage, apiKeyStorage, aiModelStorage, type AIModel } from '@/lib/storage';
+import { transactionStorage, storage, apiKeyStorage, aiModelStorage, voiceModeStorage, type AIModel, type VoiceMode } from '@/lib/storage';
 import { unifiedFinanceAI } from '@/lib/ai-provider';
+import { transcribeAudioWithWhisper, isWhisperAvailable } from '@/lib/whisper';
 import { useRouter } from 'next/navigation';
 import { formatCurrency, formatDate } from '@/lib/finance-utils';
 import { Send, Bot, User, TrendingUp, TrendingDown, Mic, MicOff } from 'lucide-react';
@@ -39,9 +40,12 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [hasApiKey, setHasApiKey] = useState(false);
   const [currentModel, setCurrentModel] = useState<AIModel>('gemini');
+  const [voiceMode, setVoiceMode] = useState<VoiceMode>('browser');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const shouldSubmitOnEndRef = useRef(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,6 +58,10 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
       const hasKey = unifiedFinanceAI.hasApiKey();
       setHasApiKey(hasKey);
       setCurrentModel(model);
+      
+      // Load voice mode preference
+      const voice = voiceModeStorage.get();
+      setVoiceMode(voice);
       
       const modelName = model === 'groq' ? 'Groq' : 'Gemini';
       const apiKeyUrl = model === 'groq' 
@@ -108,10 +116,14 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     
     checkApiKey();
     
-    // Listen for storage changes to update API key status and model
+    // Listen for storage changes to update API key status, model, and voice mode
     const unsubscribe = storage.onStorageChange((key) => {
       if (key === 'mlue-finance-gemini-api-key' || key === 'mlue-finance-groq-api-key' || key === 'mlue-finance-ai-model') {
         checkApiKey();
+      }
+      if (key === 'mlue-finance-voice-mode') {
+        const voice = voiceModeStorage.get();
+        setVoiceMode(voice);
       }
     });
     
@@ -148,6 +160,12 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
       // Stop any ongoing speech recognition
       try {
         recognitionRef.current?.stop();
+      } catch {}
+      // Stop any ongoing audio recording
+      try {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+          mediaRecorderRef.current.stop();
+        }
       } catch {}
     };
   }, []);
@@ -191,7 +209,8 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     return recognitionRef.current;
   };
 
-  const toggleMic = () => {
+  // Browser Speech Recognition (existing)
+  const toggleMicBrowser = async () => {
     const rec = getRecognition();
     if (!rec || isLoading) return;
     if (!isRecording) {
@@ -206,6 +225,90 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
       try {
         rec.stop();
       } catch {}
+    }
+  };
+
+  // Whisper audio recording and transcription
+  const toggleMicWhisper = async () => {
+    if (isLoading) return;
+    
+    if (!isRecording) {
+      // Start recording
+      try {
+        if (!isWhisperAvailable()) {
+          alert('Groq API key is required for Whisper voice mode. Please add it in Settings.');
+          return;
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: 'audio/webm;codecs=opus'
+        });
+        
+        audioChunksRef.current = [];
+        
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
+        };
+        
+        mediaRecorder.onstop = async () => {
+          // Stop all tracks
+          stream.getTracks().forEach(track => track.stop());
+          
+          // Combine audio chunks
+          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          
+          // Transcribe with Whisper
+          setIsLoading(true);
+          try {
+            const transcribedText = await transcribeAudioWithWhisper(audioBlob);
+            if (transcribedText.trim()) {
+              setInputMessage(transcribedText);
+              // Auto-submit after transcription
+              setTimeout(() => {
+                handleSendMessage();
+              }, 100);
+            }
+          } catch (error) {
+            console.error('Whisper transcription error:', error);
+            if (error instanceof Error && error.message === 'API_KEY_MISSING') {
+              alert('Groq API key is missing or invalid. Please check your API key in Settings.');
+            } else {
+              alert('Failed to transcribe audio. Please try again.');
+            }
+          } finally {
+            setIsLoading(false);
+          }
+        };
+        
+        mediaRecorder.start();
+        mediaRecorderRef.current = mediaRecorder;
+        setIsRecording(true);
+      } catch (error) {
+        console.error('Error starting audio recording:', error);
+        alert('Failed to access microphone. Please check permissions.');
+      }
+    } else {
+      // Stop recording
+      try {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+          mediaRecorderRef.current.stop();
+        }
+        setIsRecording(false);
+      } catch (error) {
+        console.error('Error stopping audio recording:', error);
+        setIsRecording(false);
+      }
+    }
+  };
+
+  const toggleMic = () => {
+    if (voiceMode === 'whisper') {
+      toggleMicWhisper();
+    } else {
+      toggleMicBrowser();
     }
   };
 
@@ -415,11 +518,19 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
           <div className="flex items-center space-x-1 pl-2">
             <Button
               onClick={toggleMic}
-              disabled={isLoading || !(typeof window !== 'undefined' && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition)))}
+              disabled={
+                isLoading || 
+                (voiceMode === 'browser' && !(typeof window !== 'undefined' && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition)))) ||
+                (voiceMode === 'whisper' && !isWhisperAvailable())
+              }
               variant="ghost"
               size="sm"
               className="h-7 w-7 p-0 hover:bg-accent rounded-full"
-              title={!((typeof window !== 'undefined') && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition))) ? 'Speech recognition not supported' : (isRecording ? 'Stop and send' : 'Start voice input')}
+              title={
+                voiceMode === 'whisper' 
+                  ? (!isWhisperAvailable() ? 'Groq API key required for Whisper' : (isRecording ? 'Stop recording' : 'Start voice input (Whisper)'))
+                  : (!((typeof window !== 'undefined') && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition))) ? 'Speech recognition not supported' : (isRecording ? 'Stop and send' : 'Start voice input (Browser)'))
+              }
             >
               {isRecording ? <MicOff className="h-3.5 w-3.5 text-foreground" /> : <Mic className="h-3.5 w-3.5 text-foreground" />}
             </Button>
