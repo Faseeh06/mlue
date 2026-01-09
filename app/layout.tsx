@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: '/images/M_logo.png',
-    shortcut: '/images/M_logo.png',
-    apple: '/images/M_logo.png',
+    icon: '/images/Rounded_logo.png',
+    shortcut: '/images/Rounded_logo.png',
+    apple: '/images/Rounded_logo.png',
   },
   appleWebApp: {
     capable: true,
@@ -59,7 +59,9 @@ html {
   --font-serif: ${instrumentSerif.variable};
 }
         `}</style>
-        <link rel="icon" type="image/png" href="/images/M_logo.png" />
+        <link rel="icon" type="image/png" href="/images/Rounded_logo.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="/images/Rounded_logo.png" sizes="16x16" />
+        <link rel="shortcut icon" type="image/png" href="/images/Rounded_logo.png" />
       </head>
       <body className={`${instrumentSerif.variable} font-sans antialiased`}>
         <div id="app-root">
