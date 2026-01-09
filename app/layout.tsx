@@ -59,6 +59,7 @@ html {
   --font-serif: ${instrumentSerif.variable};
 }
         `}</style>
+        <link rel="icon" type="image/png" href="/images/M_logo.png" />
       </head>
       <body className={`${instrumentSerif.variable} font-sans antialiased`}>
         <div id="app-root">
