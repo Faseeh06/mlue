@@ -267,7 +267,7 @@ export default function Page() {
           </p>
           <Link href="/dashboard">
             <Button size="lg" variant="default" className="h-12 px-8">
-              Start Your Free Account
+              Start Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>

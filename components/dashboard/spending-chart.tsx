@@ -110,7 +110,7 @@ export function SpendingChart({ data }: SpendingChartProps) {
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis 
                 dataKey="month" 
-                fontSize={16}
+                fontSize={11}
                 tickFormatter={formatMonthLabel}
                 tick={{ 
                   fill: 'hsl(var(--muted-foreground))', 
@@ -121,14 +121,14 @@ export function SpendingChart({ data }: SpendingChartProps) {
                   position: 'insideBottom', 
                   offset: -5, 
                   style: { 
-                    fontSize: '14px',
+                    fontSize: '9px',
                     fontWeight: 400,
                     fill: 'hsl(var(--foreground))'
                   } 
                 }}
               />
               <YAxis 
-                fontSize={16}
+                fontSize={11}
                 tickFormatter={formatYAxisLabel}
                 tick={{ 
                   fill: 'hsl(var(--muted-foreground))',
@@ -139,7 +139,7 @@ export function SpendingChart({ data }: SpendingChartProps) {
                   angle: -90, 
                   position: 'insideLeft', 
                   style: { 
-                    fontSize: '14px',
+                    fontSize: '9px',
                     fontWeight: 400,
                     fill: 'hsl(var(--foreground))'
                   } 
@@ -151,7 +151,7 @@ export function SpendingChart({ data }: SpendingChartProps) {
                   backgroundColor: 'hsl(var(--background))',
                   border: '1px solid hsl(var(--border))',
                   borderRadius: '6px',
-                  fontSize: '14px',
+                  fontSize: '9px',
                 }}
                 labelStyle={{
                   fontWeight: 500,
@@ -159,7 +159,7 @@ export function SpendingChart({ data }: SpendingChartProps) {
               />
               <Legend 
                 wrapperStyle={{
-                  fontSize: '14px',
+                  fontSize: '9px',
                   fontWeight: 400,
                 }}
               />
