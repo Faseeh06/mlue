@@ -9,9 +9,6 @@ module.exports = {
       animation: {
         "spin-slow": "spin 8s linear infinite",
       },
-      fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -46,6 +43,16 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Opus theme colors
+        surface: "#f4f1f9",
+        ink: "#0f0518",
+        iris: "#5b21b6",
+        lilac: "#d8b4fe",
+        lime: "#d9f99d",
+      },
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
       },
     },
   },

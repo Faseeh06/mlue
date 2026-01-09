@@ -33,7 +33,7 @@ export function DashboardToggle({ currentView, onViewChange }: DashboardTogglePr
     <div className="space-y-6">
       {/* Main Toggle */}
       <div className="flex justify-center">
-        <div className="bg-transparent border border-gray-200/50 rounded-lg p-1 flex">
+        <div className="bg-secondary/50 border border-foreground/20 rounded-full p-1.5 flex gap-2 shadow-sm">
           {toggleButtons.map((button) => {
             const Icon = button.icon;
             const isActive = currentView === button.id;
@@ -43,17 +43,17 @@ export function DashboardToggle({ currentView, onViewChange }: DashboardTogglePr
                 key={button.id}
                 onClick={() => onViewChange(button.id as 'chat' | 'full')}
                 variant={isActive ? 'default' : 'ghost'}
-                className={`flex-1 ${
+                className={`flex-1 rounded-full transition-all ${
                   isActive 
-                    ? 'bg-gradient-to-r from-orange-400 to-pink-400 text-white border-0' 
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-iris text-white shadow-md shadow-iris/20' 
+                    : 'bg-transparent text-foreground/70 hover:text-foreground hover:bg-secondary'
                 }`}
-                size="sm"
+                size="lg"
               >
-                <Icon className="h-4 w-4 mr-2" />
+                <Icon className={`h-5 w-5 mr-2 ${isActive ? 'text-white' : 'text-foreground/70'}`} />
                 <div className="text-left">
-                  <div className="font-light text-sm">{button.label}</div>
-                  <div className="text-xs opacity-70">{button.description}</div>
+                  <div className={`font-medium ${isActive ? 'text-white' : 'text-foreground'}`}>{button.label}</div>
+                  <div className={`text-xs ${isActive ? 'text-white/80' : 'text-muted-foreground'}`}>{button.description}</div>
                 </div>
               </Button>
             );

@@ -58,17 +58,35 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8]">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Gradient blob */}
+      <div className="fixed top-1/2 right-0 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none z-0">
+        <div 
+          className="absolute inset-0 bg-gradient-to-l blur-3xl rounded-full opacity-30"
+          style={{
+            background: 'linear-gradient(to left, rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.15), transparent)'
+          }}
+        />
+      </div>
+      <div className="fixed bottom-0 left-0 w-[500px] h-[500px] pointer-events-none z-0">
+        <div 
+          className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
+          style={{
+            background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.2), rgba(216, 180, 254, 0.15), rgba(217, 249, 157, 0.2))'
+          }}
+        />
+      </div>
+      
       <LandingHeader backHref="/dashboard" />
 
-      <main className="container mx-auto px-4 py-6 space-y-6">
+      <main className="container mx-auto px-4 py-6 space-y-6 relative z-10">
         {/* Currency */}
-        <Card className="p-6 bg-transparent border border-gray-200/50 max-w-xl">
+        <Card className="p-6 bg-secondary border border-border max-w-xl rounded-xl">
           <div className="space-y-4">
             <div>
-              <div className="text-sm font-light mb-2">Currency</div>
+              <div className="text-sm font-light mb-2 text-foreground">Currency</div>
               <Select value={currency} onValueChange={setCurrency}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-background border-border">
                   <SelectValue placeholder="Select currency" />
                 </SelectTrigger>
                 <SelectContent>
@@ -80,7 +98,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="pt-2">
-              <Button onClick={save} className="bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0">
+              <Button onClick={save} variant="default">
                 Save
               </Button>
             </div>
@@ -88,13 +106,13 @@ export default function SettingsPage() {
         </Card>
 
         {/* Export */}
-        <Card className="p-6 bg-transparent border border-gray-200/50 max-w-xl">
+        <Card className="p-6 bg-secondary border border-border max-w-xl rounded-xl">
           <div className="space-y-3">
-            <div className="text-sm font-light">Export Data</div>
-            <p className="text-sm text-gray-600 font-light">Export your transactions as CSV. Coming soon.</p>
+            <div className="text-sm font-light text-foreground">Export Data</div>
+            <p className="text-sm text-muted-foreground font-light">Export your transactions as CSV. Coming soon.</p>
             <Button
               variant="outline"
-              className="border-2 w-fit"
+              className="w-fit"
               onClick={exportCsv}
               disabled
               title="Export as CSV (coming soon)"
@@ -105,13 +123,13 @@ export default function SettingsPage() {
         </Card>
 
         {/* Reset */}
-        <Card className="p-6 bg-transparent border border-gray-200/50 max-w-xl">
+        <Card className="p-6 bg-secondary border border-border max-w-xl rounded-xl">
           <div className="space-y-3">
-            <div className="text-sm font-light">Reset the whole app</div>
-            <p className="text-sm text-gray-600 font-light">Clear all local data and return to defaults. This cannot be undone.</p>
+            <div className="text-sm font-light text-foreground">Reset the whole app</div>
+            <p className="text-sm text-muted-foreground font-light">Clear all local data and return to defaults. This cannot be undone.</p>
             <Button
               variant="outline"
-              className="border-2 w-fit"
+              className="w-fit"
               onClick={resetAll}
               title="Reset all local data"
             >

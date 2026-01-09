@@ -21,14 +21,14 @@ export function SpendingChart({ data }: SpendingChartProps) {
   };
 
   return (
-    <Card className="col-span-full lg:col-span-2 bg-transparent border border-gray-200/50">
+    <Card className="col-span-full lg:col-span-2 bg-secondary">
       <CardHeader>
-        <CardTitle className="font-light tracking-tight">MONTHLY OVERVIEW</CardTitle>
-        <CardDescription className="text-gray-600 font-light">Income vs Expenses over the last 6 months</CardDescription>
+        <CardTitle className="uppercase tracking-widest font-medium text-sm">MONTHLY OVERVIEW</CardTitle>
+        <CardDescription className="text-muted-foreground text-sm mt-1">Income vs Expenses over the last 6 months</CardDescription>
       </CardHeader>
       <CardContent>
         {data.length === 0 ? (
-          <div className="h-[300px] flex items-center justify-center text-gray-600 font-light">
+          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
             No data available for chart
           </div>
         ) : (
@@ -36,15 +36,15 @@ export function SpendingChart({ data }: SpendingChartProps) {
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <defs>
                 <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#059669" stopOpacity={0.6}/>
+                  <stop offset="5%" stopColor="#5b21b6" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#5b21b6" stopOpacity={0.6}/>
                 </linearGradient>
                 <linearGradient id="expensesGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#ec4899" stopOpacity={0.6}/>
+                  <stop offset="5%" stopColor="#d8b4fe" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#d8b4fe" stopOpacity={0.6}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis 
                 dataKey="month" 
                 className="text-muted-foreground"

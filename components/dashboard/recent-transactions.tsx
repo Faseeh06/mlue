@@ -42,16 +42,16 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
   const canViewMore = !showAll && sorted.length > initialLimit;
 
   return (
-    <Card className="col-span-full lg:col-span-2 bg-transparent border border-gray-200/50">
+    <Card className="col-span-full lg:col-span-2 bg-secondary">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle className="font-light tracking-tight">TRANSACTIONS</CardTitle>
-          <CardDescription className="text-gray-600 font-light">Latest at the top</CardDescription>
+          <CardTitle className="uppercase tracking-widest font-medium text-sm">TRANSACTIONS</CardTitle>
+          <CardDescription className="text-muted-foreground text-sm mt-1">Latest at the top</CardDescription>
         </div>
         <Button 
           onClick={onAddTransaction} 
           size="sm"
-          className="bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0"
+          variant="default"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Transaction
@@ -60,11 +60,10 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
       <CardContent>
         {visible.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-600 font-light mb-4">No transactions yet</p>
+            <p className="text-muted-foreground font-light mb-4">No transactions yet</p>
             <Button 
               onClick={onAddTransaction} 
               variant="outline"
-              className="border-2 hover:bg-gradient-to-r hover:from-orange-100 hover:to-pink-100"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Your First Transaction
@@ -73,10 +72,10 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
         ) : (
           <div className="space-y-4">
             {visible.map((transaction) => (
-              <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-200/30 rounded-lg bg-transparent">
+              <div key={transaction.id} className="flex items-center justify-between p-4 border border-border rounded-lg bg-background">
                 <div className="flex items-center space-x-4">
                   <div className={`p-2 rounded-full ${
-                    transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                    transaction.type === 'income' ? 'bg-lime/20 text-iris' : 'bg-lilac/20 text-iris'
                   }`}>
                     {transaction.type === 'income' ? (
                       <ArrowUpRight className="h-4 w-4" />
@@ -85,29 +84,26 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
                     )}
                   </div>
                   <div>
-                    <p className="font-light">{transaction.description}</p>
-                    <div className="flex items-center space-x-2">
+                    <p className="text-foreground">{transaction.description}</p>
+                    <div className="flex items-center space-x-2 mt-1">
                       <Badge variant="outline" className="text-xs">
                         {transaction.category}
                       </Badge>
-                      <span className="text-sm text-gray-600 font-light">
+                      <span className="text-xs text-muted-foreground">
                         {formatDate(transaction.date)}
                       </span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className={`font-light ${
-                    transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                  <div className="font-serif text-foreground">
                     {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                   </div>
                   <div className="flex items-center space-x-2">
                     {onEditTransaction && (
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
-                        className="border-gray-200/50"
                         onClick={() => onEditTransaction(transaction)}
                         title="Edit"
                       >
@@ -116,9 +112,8 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
                     )}
                     {onDeleteTransaction && (
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
-                        className="border-gray-200/50"
                         onClick={() => onDeleteTransaction(transaction.id)}
                         title="Delete"
                       >
@@ -134,7 +129,6 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
               <div className="flex justify-center pt-2">
                 <Button
                   variant="outline"
-                  className="border-2"
                   onClick={() => setShowAll(true)}
                 >
                   View more

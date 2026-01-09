@@ -79,8 +79,8 @@ export default function DashboardPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-iris"></div>
       </div>
     );
   }
@@ -90,19 +90,30 @@ export default function DashboardPage() {
   const budgetProgress = calculateBudgetProgress(budgets, transactions);
 
   return (
-    <div className="h-screen bg-[#f8f8f8] overflow-hidden flex flex-col">
+    <div className="h-screen bg-background overflow-hidden flex flex-col">
       {/* Header (reused from landing) */}
       <LandingHeader backHref="/" />
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 py-4 overflow-hidden flex flex-col">
-        {/* Gradient blob */}
+      <main className="flex-1 container mx-auto px-4 py-4 overflow-hidden flex flex-col relative">
+        {/* Gradient blob - top right */}
         <div
-          className="fixed right-0 top-20 h-[300px] w-[300px] animate-pulse rounded-full bg-gradient-to-br from-pink-400 via-orange-300 to-yellow-200 opacity-30 blur-3xl pointer-events-none"
+          className="fixed right-0 top-20 h-[400px] w-[400px] rounded-full blur-3xl pointer-events-none z-0 opacity-40"
+          style={{
+            background: 'linear-gradient(to bottom right, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.2), rgba(217, 249, 157, 0.3))'
+          }}
+          aria-hidden="true"
+        />
+        {/* Gradient blob - bottom left */}
+        <div
+          className="fixed bottom-0 left-0 h-[500px] w-[500px] rounded-full blur-3xl pointer-events-none z-0 opacity-30"
+          style={{
+            background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.25), rgba(216, 180, 254, 0.15), rgba(217, 249, 157, 0.2))'
+          }}
           aria-hidden="true"
         />
         
-        <div className="relative flex-1 flex flex-col overflow-hidden">
+        <div className="relative flex-1 flex flex-col overflow-hidden z-10">
           {/* Dashboard Toggle */}
           <div className="flex-shrink-0 mb-4">
             <DashboardToggle 
@@ -157,7 +168,7 @@ export default function DashboardPage() {
           <Button 
             onClick={() => setShowTransactionForm(true)}
             size="lg"
-            className="rounded-full shadow-lg bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0"
+            className="rounded-full shadow-lg"
           >
             <Plus className="h-6 w-6" />
           </Button>

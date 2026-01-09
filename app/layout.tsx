@@ -1,8 +1,16 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
+})
 
 export const metadata: Metadata = {
   title: 'Mlue Finance - Personal Finance Manager',
@@ -48,10 +56,11 @@ html {
   font-family: ${GeistSans.style.fontFamily};
   --font-sans: ${GeistSans.variable};
   --font-mono: ${GeistMono.variable};
+  --font-serif: ${instrumentSerif.variable};
 }
         `}</style>
       </head>
-      <body>
+      <body className={`${instrumentSerif.variable} font-sans antialiased`}>
         {children}
         <Analytics />
         <script

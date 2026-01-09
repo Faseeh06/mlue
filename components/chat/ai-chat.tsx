@@ -209,16 +209,16 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-transparent border border-gray-200/50 rounded-lg">
+    <div className="flex flex-col h-full overflow-hidden bg-secondary border border-border rounded-xl">
       {/* Chat Header */}
-      <div className="p-4 border-b border-gray-200/30">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-gradient-to-br from-pink-400 via-orange-300 to-yellow-200 rounded-lg">
-            <Bot className="h-5 w-5 text-white" />
+      <div className="p-6 border-b border-border bg-gradient-to-r from-iris/5 to-transparent">
+        <div className="flex items-center space-x-4">
+          <div className="p-3 bg-iris rounded-full shadow-lg shadow-iris/20">
+            <Bot className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h3 className="font-light tracking-tight">AI FINANCE ASSISTANT</h3>
-            <p className="text-sm text-gray-600 font-light">
+            <h3 className="text-lg font-serif font-semibold text-foreground mb-1">AI Finance Assistant</h3>
+            <p className="text-sm text-muted-foreground">
               {isLoading ? 'Thinking...' : 'Ready to help with your finances'}
             </p>
           </div>
@@ -232,20 +232,20 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
           <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[80%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
               <div className={`flex items-end space-x-2 ${message.role === 'user' ? 'flex-row-reverse space-x-reverse' : 'flex-row'}`}>
-                <div className={`p-2 rounded-full ${message.role === 'user' ? 'bg-gradient-to-r from-orange-400 to-pink-400' : 'bg-gray-100'}`}>
+                <div className={`p-2 rounded-full ${message.role === 'user' ? 'bg-primary' : 'bg-secondary'}`}>
                   {message.role === 'user' ? (
-                    <User className="h-4 w-4 text-white" />
+                    <User className="h-4 w-4 text-primary-foreground" />
                   ) : (
-                    <Bot className="h-4 w-4 text-gray-600" />
+                    <Bot className="h-4 w-4 text-foreground" />
                   )}
                 </div>
                 <div className={`rounded-lg p-3 ${
                   message.role === 'user' 
-                    ? 'bg-gradient-to-r from-orange-400 to-pink-400 text-white' 
-                    : 'bg-gray-50 border border-gray-200/50'
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-background border border-border'
                 }`}>
-                  <p className="text-sm font-light">{message.content}</p>
-                  <p className={`text-xs mt-1 ${message.role === 'user' ? 'text-white/70' : 'text-gray-500'}`}>
+                  <p className="text-sm">{message.content}</p>
+                  <p className={`text-xs mt-1 ${message.role === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                     {formatTime(message.timestamp)}
                   </p>
                 </div>
@@ -255,11 +255,11 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
               {message.transactions && message.transactions.length > 0 && (
                 <div className="mt-2 space-y-2">
                   {message.transactions.map((transaction) => (
-                    <Card key={transaction.id} className="p-3 bg-transparent border border-gray-200/30">
+                    <Card key={transaction.id} className="p-3 bg-background border border-border">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                           <div className={`p-1.5 rounded-full ${
-                            transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                            transaction.type === 'income' ? 'bg-lime/20 text-iris' : 'bg-lilac/20 text-iris'
                           }`}>
                             {transaction.type === 'income' ? (
                               <TrendingUp className="h-3 w-3" />
@@ -268,30 +268,28 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
                             )}
                           </div>
                           <div>
-                            <p className="text-sm font-light">{transaction.description}</p>
-                            <div className="flex items-center space-x-2 flex-wrap">
+                            <p className="text-sm text-foreground">{transaction.description}</p>
+                            <div className="flex items-center space-x-2 flex-wrap mt-1">
                               <Badge variant="outline" className="text-xs">
                                 {transaction.category}
                               </Badge>
-                              <span className="text-xs text-gray-600 font-light">
+                              <span className="text-xs text-muted-foreground">
                                 {formatDate(transaction.date)}
                               </span>
                               {transaction.day && (
-                                <span className="text-xs text-gray-500 font-light">
+                                <span className="text-xs text-muted-foreground">
                                   {transaction.day}
                                 </span>
                               )}
                             </div>
                             {transaction.userPrompt && (
-                              <p className="text-xs text-gray-400 font-light mt-1 italic">
+                              <p className="text-xs text-muted-foreground mt-1 italic">
                                 "{transaction.userPrompt}"
                               </p>
                             )}
                           </div>
                         </div>
-                        <div className={`font-light ${
-                          transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-                        }`}>
+                        <div className="font-serif text-foreground">
                           {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                         </div>
                       </div>
@@ -306,8 +304,8 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
       </div>
 
       {/* Input */}
-      <div className="p-3 border-t border-gray-200/30">
-        <div className="rounded-full border border-gray-400/60 focus-within:border-gray-600 bg-gray-100 px-3 py-1 flex items-center">
+      <div className="p-3 border-t border-border">
+        <div className="rounded-full border border-border focus-within:border-iris bg-background px-3 py-1 flex items-center">
           <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
@@ -315,7 +313,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
             placeholder="Ask anything"
             disabled={isLoading}
             rows={2}
-            className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-0 focus:ring-0 ring-0 ring-offset-0 outline-none focus:outline-none shadow-none rounded-full font-light text-sm leading-snug resize-none min-h-[38px] max-h-[60px] py-0.5 placeholder:text-gray-500"
+            className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-0 focus:ring-0 ring-0 ring-offset-0 outline-none focus:outline-none shadow-none rounded-full font-light text-sm leading-snug resize-none min-h-[38px] max-h-[60px] py-0.5 placeholder:text-muted-foreground"
           />
           <div className="flex items-center space-x-1 pl-2">
             <Button
@@ -323,16 +321,17 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
               disabled={isLoading || !(typeof window !== 'undefined' && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition)))}
               variant="ghost"
               size="sm"
-              className="h-7 w-7 p-0 hover:bg-gray-200 rounded-full"
+              className="h-7 w-7 p-0 hover:bg-accent rounded-full"
               title={!((typeof window !== 'undefined') && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition))) ? 'Speech recognition not supported' : (isRecording ? 'Stop and send' : 'Start voice input')}
             >
-              {isRecording ? <MicOff className="h-3.5 w-3.5 text-gray-700" /> : <Mic className="h-3.5 w-3.5 text-gray-700" />}
+              {isRecording ? <MicOff className="h-3.5 w-3.5 text-foreground" /> : <Mic className="h-3.5 w-3.5 text-foreground" />}
             </Button>
             <Button
               onClick={handleSendMessage}
               disabled={!inputMessage.trim() || isLoading}
               size="sm"
-              className="h-7 w-7 p-0 rounded-full bg-gray-800 hover:bg-gray-900 text-white border-0"
+              variant="default"
+              className="h-7 w-7 p-0 rounded-full"
               title="Send"
             >
               <Send className="h-3.5 w-3.5" />

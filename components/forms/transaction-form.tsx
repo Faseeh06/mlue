@@ -170,13 +170,12 @@ export function TransactionForm({
               type="button" 
               variant="outline" 
               onClick={() => onOpenChange(false)}
-              className="border-2"
             >
               Cancel
             </Button>
             <Button 
               type="submit"
-              className="bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 border-0"
+              variant="default"
             >
               {transaction ? 'Update' : 'Add'} Transaction
             </Button>
