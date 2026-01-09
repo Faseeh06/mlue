@@ -7,6 +7,8 @@ const STORAGE_KEYS = {
   ACCOUNTS: 'mlue-finance-accounts',
   PREFS: 'mlue-finance-preferences',
   GEMINI_API_KEY: 'mlue-finance-gemini-api-key',
+  GROQ_API_KEY: 'mlue-finance-groq-api-key',
+  AI_MODEL: 'mlue-finance-ai-model',
 };
 
 // Default categories
@@ -235,8 +237,21 @@ export const preferencesStorage = {
   set: (prefs: Preferences) => storage.set(STORAGE_KEYS.PREFS, prefs),
 };
 
-// Gemini API Key operations
+// AI Model preference
+export type AIModel = 'gemini' | 'groq';
+
+export const aiModelStorage = {
+  get: (): AIModel => {
+    return storage.get<AIModel>(STORAGE_KEYS.AI_MODEL, 'gemini');
+  },
+  set: (model: AIModel): boolean => {
+    return storage.set(STORAGE_KEYS.AI_MODEL, model);
+  },
+};
+
+// API Key operations (unified for both models)
 export const apiKeyStorage = {
+  // Gemini API Key
   get: (): string | null => {
     const key = storage.get<string | null>(STORAGE_KEYS.GEMINI_API_KEY, null);
     return key || null;
@@ -250,5 +265,31 @@ export const apiKeyStorage = {
   has: (): boolean => {
     const key = apiKeyStorage.get();
     return key !== null && key.trim().length > 0;
+  },
+  
+  // Groq API Key
+  getGroq: (): string | null => {
+    const key = storage.get<string | null>(STORAGE_KEYS.GROQ_API_KEY, null);
+    return key || null;
+  },
+  setGroq: (key: string): boolean => {
+    return storage.set(STORAGE_KEYS.GROQ_API_KEY, key);
+  },
+  removeGroq: (): void => {
+    storage.remove(STORAGE_KEYS.GROQ_API_KEY);
+  },
+  hasGroq: (): boolean => {
+    const key = apiKeyStorage.getGroq();
+    return key !== null && key.trim().length > 0;
+  },
+  
+  // Get API key for current model
+  getForModel: (model: AIModel): string | null => {
+    return model === 'groq' ? apiKeyStorage.getGroq() : apiKeyStorage.get();
+  },
+  
+  // Check if API key exists for current model
+  hasForModel: (model: AIModel): boolean => {
+    return model === 'groq' ? apiKeyStorage.hasGroq() : apiKeyStorage.has();
   },
 };

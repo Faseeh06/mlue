@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { preferencesStorage, apiKeyStorage, storage } from "@/lib/storage";
+import { preferencesStorage, apiKeyStorage, aiModelStorage, storage, type AIModel } from "@/lib/storage";
 import LandingHeader from "@/components/common/landing-header";
-import { DollarSign, Download, Trash2, CheckCircle2, Globe, Key, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { DollarSign, Download, Trash2, CheckCircle2, Globe, Key, Eye, EyeOff, ExternalLink, Sparkles } from "lucide-react";
 
 const currencies = [
   { code: "USD", label: "US Dollar" },
@@ -28,20 +28,32 @@ export default function SettingsPage() {
   const router = useRouter();
   const [currency, setCurrency] = useState("USD");
   const [saved, setSaved] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [showApiKey, setShowApiKey] = useState(false);
+  const [aiModel, setAiModel] = useState<AIModel>("gemini");
+  const [geminiApiKey, setGeminiApiKey] = useState("");
+  const [groqApiKey, setGroqApiKey] = useState("");
+  const [showGeminiApiKey, setShowGeminiApiKey] = useState(false);
+  const [showGroqApiKey, setShowGroqApiKey] = useState(false);
   const [apiKeySaved, setApiKeySaved] = useState(false);
 
   useEffect(() => {
     const prefs = preferencesStorage.get();
     setCurrency(prefs.currency || "USD");
     
-    // Load API key (masked)
-    const storedKey = apiKeyStorage.get();
-    if (storedKey) {
-      // Show only last 4 characters for security
-      const masked = '•'.repeat(Math.max(0, storedKey.length - 4)) + storedKey.slice(-4);
-      setApiKey(masked);
+    // Load AI model preference
+    const model = aiModelStorage.get();
+    setAiModel(model);
+    
+    // Load API keys (masked)
+    const storedGeminiKey = apiKeyStorage.get();
+    if (storedGeminiKey) {
+      const masked = '•'.repeat(Math.max(0, storedGeminiKey.length - 4)) + storedGeminiKey.slice(-4);
+      setGeminiApiKey(masked);
+    }
+    
+    const storedGroqKey = apiKeyStorage.getGroq();
+    if (storedGroqKey) {
+      const masked = '•'.repeat(Math.max(0, storedGroqKey.length - 4)) + storedGroqKey.slice(-4);
+      setGroqApiKey(masked);
     }
   }, []);
 
@@ -69,6 +81,8 @@ export default function SettingsPage() {
       storage.remove('mlue-finance-accounts');
       storage.remove('mlue-finance-preferences');
       storage.remove('mlue-finance-gemini-api-key');
+      storage.remove('mlue-finance-groq-api-key');
+      storage.remove('mlue-finance-ai-model');
       // Reload to reflect defaults
       window.location.reload();
     } catch (e) {
@@ -81,32 +95,69 @@ export default function SettingsPage() {
     alert('Export as CSV is coming soon.');
   };
 
-  const handleApiKeySave = () => {
-    if (!apiKey.trim()) {
+  // Auto-save on model change
+  useEffect(() => {
+    const currentModel = aiModelStorage.get();
+    if (aiModel !== currentModel) {
+      aiModelStorage.set(aiModel);
+    }
+  }, [aiModel]);
+
+  const handleGeminiApiKeySave = () => {
+    if (!geminiApiKey.trim()) {
       alert('Please enter an API key');
       return;
     }
     
     // If the key is masked (contains •), don't update
-    if (apiKey.includes('•')) {
+    if (geminiApiKey.includes('•')) {
       alert('API key is already saved. Clear it first to enter a new one.');
       return;
     }
     
-    apiKeyStorage.set(apiKey.trim());
+    apiKeyStorage.set(geminiApiKey.trim());
     setApiKeySaved(true);
     // Mask the key after saving
-    const masked = '•'.repeat(Math.max(0, apiKey.length - 4)) + apiKey.slice(-4);
-    setApiKey(masked);
-    setShowApiKey(false);
+    const masked = '•'.repeat(Math.max(0, geminiApiKey.length - 4)) + geminiApiKey.slice(-4);
+    setGeminiApiKey(masked);
+    setShowGeminiApiKey(false);
     setTimeout(() => setApiKeySaved(false), 2000);
   };
 
-  const handleApiKeyClear = () => {
-    if (window.confirm('Are you sure you want to remove your API key? You will need to add it again to use AI features.')) {
+  const handleGeminiApiKeyClear = () => {
+    if (window.confirm('Are you sure you want to remove your Gemini API key? You will need to add it again to use Gemini AI features.')) {
       apiKeyStorage.remove();
-      setApiKey("");
-      setShowApiKey(false);
+      setGeminiApiKey("");
+      setShowGeminiApiKey(false);
+    }
+  };
+
+  const handleGroqApiKeySave = () => {
+    if (!groqApiKey.trim()) {
+      alert('Please enter an API key');
+      return;
+    }
+    
+    // If the key is masked (contains •), don't update
+    if (groqApiKey.includes('•')) {
+      alert('API key is already saved. Clear it first to enter a new one.');
+      return;
+    }
+    
+    apiKeyStorage.setGroq(groqApiKey.trim());
+    setApiKeySaved(true);
+    // Mask the key after saving
+    const masked = '•'.repeat(Math.max(0, groqApiKey.length - 4)) + groqApiKey.slice(-4);
+    setGroqApiKey(masked);
+    setShowGroqApiKey(false);
+    setTimeout(() => setApiKeySaved(false), 2000);
+  };
+
+  const handleGroqApiKeyClear = () => {
+    if (window.confirm('Are you sure you want to remove your Groq API key? You will need to add it again to use Groq AI features.')) {
+      apiKeyStorage.removeGroq();
+      setGroqApiKey("");
+      setShowGroqApiKey(false);
     }
   };
 
@@ -147,97 +198,219 @@ export default function SettingsPage() {
         </div>
 
         <div className="space-y-4">
-          {/* Gemini API Key */}
+          {/* AI Model Selection */}
           <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
             <div className="flex items-start space-x-4">
               <div className="p-3 bg-iris/10 rounded-lg">
-                <Key className="h-5 w-5 text-iris" />
+                <Sparkles className="h-5 w-5 text-iris" />
               </div>
               <div className="flex-1 space-y-4">
                 <div>
-                  <h3 className="text-lg font-medium text-foreground mb-1">Gemini API Key</h3>
+                  <h3 className="text-lg font-medium text-foreground mb-1">AI Model</h3>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Add your Google Gemini API key to enable AI chat features
+                    Choose which AI model to use for chat features
                   </p>
-                  <a
-                    href="https://aistudio.google.com/app/apikey"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-iris hover:underline flex items-center space-x-1 mb-3"
-                  >
-                    <span>Get your API key from Google AI Studio</span>
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      type={showApiKey ? "text" : "password"}
-                      value={apiKey}
-                      onChange={(e) => {
-                        // Only allow editing if not masked
-                        if (!apiKey.includes('•')) {
-                          setApiKey(e.target.value);
-                        }
-                      }}
-                      placeholder="Enter your Gemini API key"
-                      className="bg-background/50 border-border/50 rounded-lg flex-1"
-                      disabled={apiKey.includes('•')}
-                    />
-                    {apiKey && !apiKey.includes('•') && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowApiKey(!showApiKey)}
-                        className="h-10 w-10 p-0"
-                      >
-                        {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {!apiKey.includes('•') && (
-                      <Button
-                        onClick={handleApiKeySave}
-                        className="rounded-full bg-iris text-white hover:bg-iris/90"
-                        disabled={!apiKey.trim()}
-                      >
-                        Save API Key
-                      </Button>
-                    )}
-                    {apiKey.includes('•') && (
-                      <>
-                        <Button
-                          onClick={() => {
-                            setApiKey("");
-                            setShowApiKey(false);
-                          }}
-                          variant="outline"
-                          className="rounded-full border border-foreground/30 bg-transparent hover:bg-secondary"
-                        >
-                          Change API Key
-                        </Button>
-                        <Button
-                          onClick={handleApiKeyClear}
-                          variant="outline"
-                          className="rounded-full border border-red-500/30 bg-transparent text-red-500 hover:bg-red-500/10"
-                        >
-                          Remove
-                        </Button>
-                      </>
-                    )}
-                    {apiKeySaved && (
-                      <div className="flex items-center space-x-2 text-sm text-iris">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <span>Saved</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <Select value={aiModel} onValueChange={(value: AIModel) => setAiModel(value)}>
+                  <SelectTrigger className="bg-background/50 border-border/50 rounded-lg">
+                    <SelectValue placeholder="Select AI model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="gemini">Gemini (Google)</SelectItem>
+                    <SelectItem value="groq">Groq (Llama 3.1 8B Instant)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </Card>
+
+          {/* Gemini API Key */}
+          {aiModel === 'gemini' && (
+            <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
+              <div className="flex items-start space-x-4">
+                <div className="p-3 bg-iris/10 rounded-lg">
+                  <Key className="h-5 w-5 text-iris" />
+                </div>
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h3 className="text-lg font-medium text-foreground mb-1">Gemini API Key</h3>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Add your Google Gemini API key to enable AI chat features
+                    </p>
+                    <a
+                      href="https://aistudio.google.com/app/apikey"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-iris hover:underline flex items-center space-x-1 mb-3"
+                    >
+                      <span>Get your API key from Google AI Studio</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        type={showGeminiApiKey ? "text" : "password"}
+                        value={geminiApiKey}
+                        onChange={(e) => {
+                          // Only allow editing if not masked
+                          if (!geminiApiKey.includes('•')) {
+                            setGeminiApiKey(e.target.value);
+                          }
+                        }}
+                        placeholder="Enter your Gemini API key"
+                        className="bg-background/50 border-border/50 rounded-lg flex-1"
+                        disabled={geminiApiKey.includes('•')}
+                      />
+                      {geminiApiKey && !geminiApiKey.includes('•') && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowGeminiApiKey(!showGeminiApiKey)}
+                          className="h-10 w-10 p-0"
+                        >
+                          {showGeminiApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {!geminiApiKey.includes('•') && (
+                        <Button
+                          onClick={handleGeminiApiKeySave}
+                          className="rounded-full bg-iris text-white hover:bg-iris/90"
+                          disabled={!geminiApiKey.trim()}
+                        >
+                          Save API Key
+                        </Button>
+                      )}
+                      {geminiApiKey.includes('•') && (
+                        <>
+                          <Button
+                            onClick={() => {
+                              setGeminiApiKey("");
+                              setShowGeminiApiKey(false);
+                            }}
+                            variant="outline"
+                            className="rounded-full border border-foreground/30 bg-transparent hover:bg-secondary"
+                          >
+                            Change API Key
+                          </Button>
+                          <Button
+                            onClick={handleGeminiApiKeyClear}
+                            variant="outline"
+                            className="rounded-full border border-red-500/30 bg-transparent text-red-500 hover:bg-red-500/10"
+                          >
+                            Remove
+                          </Button>
+                        </>
+                      )}
+                      {apiKeySaved && (
+                        <div className="flex items-center space-x-2 text-sm text-iris">
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span>Saved</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* Groq API Key */}
+          {aiModel === 'groq' && (
+            <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
+              <div className="flex items-start space-x-4">
+                <div className="p-3 bg-iris/10 rounded-lg">
+                  <Key className="h-5 w-5 text-iris" />
+                </div>
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h3 className="text-lg font-medium text-foreground mb-1">Groq API Key</h3>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Add your Groq API key to enable AI chat features with Llama 3.1 8B Instant
+                    </p>
+                    <a
+                      href="https://console.groq.com/keys"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-iris hover:underline flex items-center space-x-1 mb-3"
+                    >
+                      <span>Get your API key from Groq Console</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        type={showGroqApiKey ? "text" : "password"}
+                        value={groqApiKey}
+                        onChange={(e) => {
+                          // Only allow editing if not masked
+                          if (!groqApiKey.includes('•')) {
+                            setGroqApiKey(e.target.value);
+                          }
+                        }}
+                        placeholder="Enter your Groq API key"
+                        className="bg-background/50 border-border/50 rounded-lg flex-1"
+                        disabled={groqApiKey.includes('•')}
+                      />
+                      {groqApiKey && !groqApiKey.includes('•') && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowGroqApiKey(!showGroqApiKey)}
+                          className="h-10 w-10 p-0"
+                        >
+                          {showGroqApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {!groqApiKey.includes('•') && (
+                        <Button
+                          onClick={handleGroqApiKeySave}
+                          className="rounded-full bg-iris text-white hover:bg-iris/90"
+                          disabled={!groqApiKey.trim()}
+                        >
+                          Save API Key
+                        </Button>
+                      )}
+                      {groqApiKey.includes('•') && (
+                        <>
+                          <Button
+                            onClick={() => {
+                              setGroqApiKey("");
+                              setShowGroqApiKey(false);
+                            }}
+                            variant="outline"
+                            className="rounded-full border border-foreground/30 bg-transparent hover:bg-secondary"
+                          >
+                            Change API Key
+                          </Button>
+                          <Button
+                            onClick={handleGroqApiKeyClear}
+                            variant="outline"
+                            className="rounded-full border border-red-500/30 bg-transparent text-red-500 hover:bg-red-500/10"
+                          >
+                            Remove
+                          </Button>
+                        </>
+                      )}
+                      {apiKeySaved && (
+                        <div className="flex items-center space-x-2 text-sm text-iris">
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span>Saved</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
 
           {/* Currency */}
           <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">

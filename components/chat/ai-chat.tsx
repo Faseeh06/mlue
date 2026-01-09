@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChatMessage, financeAI } from '@/lib/gemini';
+import { ChatMessage } from '@/lib/gemini';
 import { Transaction } from '@/lib/types';
-import { transactionStorage, storage, apiKeyStorage } from '@/lib/storage';
+import { transactionStorage, storage, apiKeyStorage, aiModelStorage, type AIModel } from '@/lib/storage';
+import { unifiedFinanceAI } from '@/lib/ai-provider';
 import { useRouter } from 'next/navigation';
 import { formatCurrency, formatDate } from '@/lib/finance-utils';
 import { Send, Bot, User, TrendingUp, TrendingDown, Mic, MicOff } from 'lucide-react';
@@ -37,6 +38,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [hasApiKey, setHasApiKey] = useState(false);
+  const [currentModel, setCurrentModel] = useState<AIModel>('gemini');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const shouldSubmitOnEndRef = useRef(false);
@@ -48,15 +50,22 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   // Check for API key and load chat history on mount
   useEffect(() => {
     const checkApiKey = () => {
-      const hasKey = apiKeyStorage.has();
+      const model = aiModelStorage.get();
+      const hasKey = unifiedFinanceAI.hasApiKey();
       setHasApiKey(hasKey);
+      setCurrentModel(model);
+      
+      const modelName = model === 'groq' ? 'Groq' : 'Gemini';
+      const apiKeyUrl = model === 'groq' 
+        ? 'https://console.groq.com/keys' 
+        : 'https://aistudio.google.com/app/apikey';
       
       if (!hasKey) {
         // Show welcome message asking for API key
         setMessages([{
           id: '1',
           role: 'assistant',
-          content: 'Hi! To use AI chat features, please add your Gemini API key in Settings. You can get a free API key from Google AI Studio.',
+          content: `Hi! To use AI chat features, please add your ${modelName} API key in Settings. You can get a free API key from ${model === 'groq' ? 'Groq Console' : 'Google AI Studio'}.`,
           timestamp: new Date(),
         }]);
       } else {
@@ -99,9 +108,9 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     
     checkApiKey();
     
-    // Listen for storage changes to update API key status
+    // Listen for storage changes to update API key status and model
     const unsubscribe = storage.onStorageChange((key) => {
-      if (key === 'mlue-finance-gemini-api-key') {
+      if (key === 'mlue-finance-gemini-api-key' || key === 'mlue-finance-groq-api-key' || key === 'mlue-finance-ai-model') {
         checkApiKey();
       }
     });
@@ -204,11 +213,13 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     if (!inputMessage.trim() || isLoading) return;
 
     // Check for API key before sending
-    if (!apiKeyStorage.has()) {
+    if (!unifiedFinanceAI.hasApiKey()) {
+      const model = aiModelStorage.get();
+      const modelName = model === 'groq' ? 'Groq' : 'Gemini';
       const noKeyMessage: ChatMessage = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: 'Please add your Gemini API key in Settings to use AI features. Click the button below to go to Settings.',
+        content: `Please add your ${modelName} API key in Settings to use AI features. Click the button below to go to Settings.`,
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, {
@@ -233,14 +244,16 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     setIsLoading(true);
 
     try {
-      const aiResponse = await financeAI.processMessage(userMessage.content, messages);
+      const aiResponse = await unifiedFinanceAI.processMessage(userMessage.content, messages);
       
       // Check if API key is missing
       if (aiResponse.content === 'API_KEY_MISSING') {
+        const model = aiModelStorage.get();
+        const modelName = model === 'groq' ? 'Groq' : 'Gemini';
         const noKeyMessage: ChatMessage = {
           id: Date.now().toString(),
           role: 'assistant',
-          content: 'API key is missing or invalid. Please add your Gemini API key in Settings.',
+          content: `API key is missing or invalid. Please add your ${modelName} API key in Settings.`,
           timestamp: new Date(),
         };
         setMessages(prev => [...prev, noKeyMessage]);
@@ -295,7 +308,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
           <div className="flex-1">
             <h3 className="text-lg font-serif font-semibold text-foreground mb-1">AI Finance Assistant</h3>
             <p className="text-sm text-muted-foreground">
-              {!hasApiKey ? 'API key required' : isLoading ? 'Thinking...' : 'Ready to help with your finances'}
+              {!hasApiKey ? 'API key required' : isLoading ? 'Thinking...' : `Ready (${currentModel === 'groq' ? 'Groq' : 'Gemini'})`}
             </p>
           </div>
           {!hasApiKey && (
