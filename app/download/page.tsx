@@ -61,7 +61,7 @@ export default function DownloadPage() {
                 <Button 
                   size="lg" 
                   variant="default" 
-                  className="w-full h-12"
+                  className="w-full h-12 rounded-full"
                   onClick={() => {
                     // Replace with actual App Store URL
                     window.open('https://apps.apple.com', '_blank')
@@ -86,7 +86,7 @@ export default function DownloadPage() {
                 <Button 
                   size="lg" 
                   variant="default" 
-                  className="w-full h-12"
+                  className="w-full h-12 rounded-full"
                   onClick={() => {
                     // Replace with actual Google Play URL
                     window.open('https://play.google.com', '_blank')

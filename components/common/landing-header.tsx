@@ -14,7 +14,7 @@ export function LandingHeader({ backHref }: LandingHeaderProps) {
   const pathname = usePathname();
 
   return (
-    <header className="flex items-center justify-between px-6 py-6 bg-transparent sticky top-0 z-50">
+    <header className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-6 bg-transparent sticky top-0 z-50">
       <div className="flex items-center space-x-3">
         <Link href={backHref || "/"} className="flex items-center">
           <Image 
@@ -22,7 +22,7 @@ export function LandingHeader({ backHref }: LandingHeaderProps) {
             alt="Mlue" 
             width={120} 
             height={120}
-            className="h-16 w-auto"
+            className="h-12 sm:h-16 w-auto"
           />
         </Link>
       </div>

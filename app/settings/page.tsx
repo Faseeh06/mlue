@@ -67,31 +67,30 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Enhanced Gradient blobs */}
-      <div className="fixed top-1/2 right-0 -translate-y-1/2 w-[700px] h-[700px] pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 bg-gradient-to-l blur-3xl rounded-full opacity-50"
-          style={{
-            background: 'linear-gradient(to left, rgba(216, 180, 254, 0.4), rgba(91, 33, 182, 0.3), transparent)'
-          }}
-        />
-      </div>
-      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-40"
-          style={{
-            background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.3), rgba(216, 180, 254, 0.25), rgba(217, 249, 157, 0.3))'
-          }}
-        />
-      </div>
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-30"
-          style={{
-            background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.2), transparent)'
-          }}
-        />
-      </div>
+      {/* Gradient blob - top right */}
+      <div
+        className="fixed right-0 top-20 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full blur-3xl pointer-events-none z-0 opacity-40 md:opacity-60"
+        style={{
+          background: 'linear-gradient(to bottom right, rgba(216, 180, 254, 0.4), rgba(91, 33, 182, 0.3), rgba(217, 249, 157, 0.4))'
+        }}
+        aria-hidden="true"
+      />
+      {/* Gradient blob - bottom left */}
+      <div
+        className="fixed bottom-0 left-0 h-[350px] w-[350px] md:h-[600px] md:w-[600px] rounded-full blur-3xl pointer-events-none z-0 opacity-30 md:opacity-50"
+        style={{
+          background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.3), rgba(216, 180, 254, 0.2), rgba(217, 249, 157, 0.3))'
+        }}
+        aria-hidden="true"
+      />
+      {/* Gradient blob - center - hidden on mobile */}
+      <div
+        className="hidden md:block fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full blur-3xl pointer-events-none z-0 opacity-30"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.25), rgba(217, 249, 157, 0.3))'
+        }}
+        aria-hidden="true"
+      />
       
       <LandingHeader backHref="/dashboard" />
 

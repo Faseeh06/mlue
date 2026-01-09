@@ -50,11 +50,11 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
         </div>
         <Button 
           onClick={onAddTransaction} 
-          size="sm"
-          variant="default"
+          size="sm" 
+          variant="ghost"
+          className="rounded-full"
         >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Transaction
+          <Plus className="h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent>
@@ -64,17 +64,18 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
             <Button 
               onClick={onAddTransaction} 
               variant="outline"
+              className="rounded-full border border-foreground/30 bg-transparent hover:bg-secondary h-12 px-6"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Your First Transaction
             </Button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {visible.map((transaction) => (
-              <div key={transaction.id} className="flex items-center justify-between p-4 border border-border rounded-lg bg-background">
-                <div className="flex items-center space-x-4">
-                  <div className={`p-2 rounded-full ${
+              <div key={transaction.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 p-3 sm:p-4 border border-border rounded-lg bg-background">
+                <div className="flex items-start sm:items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                  <div className={`p-2 rounded-full flex-shrink-0 ${
                     transaction.type === 'income' ? 'bg-lime/20 text-iris' : 'bg-lilac/20 text-iris'
                   }`}>
                     {transaction.type === 'income' ? (
@@ -83,9 +84,9 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
                       <ArrowDownLeft className="h-4 w-4" />
                     )}
                   </div>
-                  <div>
-                    <p className="text-foreground">{transaction.description}</p>
-                    <div className="flex items-center space-x-2 mt-1">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-foreground text-sm sm:text-base break-words">{transaction.description}</p>
+                    <div className="flex flex-wrap items-center gap-2 mt-1.5 sm:mt-1">
                       <Badge variant="outline" className="text-xs">
                         {transaction.category}
                       </Badge>
@@ -95,19 +96,20 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="font-serif text-foreground">
+                <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-3 flex-shrink-0">
+                  <div className="font-serif text-foreground text-base sm:text-lg whitespace-nowrap">
                     {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 sm:space-x-2">
                     {onEditTransaction && (
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => onEditTransaction(transaction)}
                         title="Edit"
+                        className="rounded-full h-8 w-8 p-0"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="h-3.5 w-3.5" />
                       </Button>
                     )}
                     {onDeleteTransaction && (
@@ -116,8 +118,9 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
                         size="sm"
                         onClick={() => onDeleteTransaction(transaction.id)}
                         title="Delete"
+                        className="rounded-full h-8 w-8 p-0"
                       >
-                        <Trash className="h-4 w-4" />
+                        <Trash className="h-3.5 w-3.5" />
                       </Button>
                     )}
                   </div>
@@ -130,6 +133,7 @@ export function RecentTransactions({ transactions, onAddTransaction, onEditTrans
                 <Button
                   variant="outline"
                   onClick={() => setShowAll(true)}
+                  className="rounded-full border border-foreground/30 bg-transparent hover:bg-secondary"
                 >
                   View more
                 </Button>

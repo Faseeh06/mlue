@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FinancialOverview } from "@/components/dashboard/financial-overview";
 import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 import { SpendingChart } from "@/components/dashboard/spending-chart";
 import { BudgetProgress } from "@/components/dashboard/budget-progress";
-import { TransactionForm } from "@/components/forms/transaction-form";
 import { AIChat } from "@/components/chat/ai-chat";
 import { DashboardToggle } from "@/components/dashboard/dashboard-toggle";
 import { Transaction, Category, Budget } from "@/lib/types";
@@ -16,16 +17,14 @@ import {
   getMonthlySpending,
   calculateBudgetProgress 
 } from "@/lib/finance-utils";
-import { Wallet, Plus, Settings, Menu, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Plus } from "lucide-react";
 import LandingHeader from "@/components/common/landing-header";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [showTransactionForm, setShowTransactionForm] = useState(false);
-  const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>(undefined);
   const [mounted, setMounted] = useState(false);
   const [currentView, setCurrentView] = useState<'chat' | 'full'>('chat');
 
@@ -40,31 +39,17 @@ export default function DashboardPage() {
     setBudgets(budgetStorage.getAll());
   };
 
-  const handleAddTransaction = (transaction: Transaction) => {
-    // Create new transaction
-    transactionStorage.add(transaction);
-    loadData();
-  };
-
-  const handleSubmitTransaction = (transaction: Transaction) => {
-    if (editingTransaction) {
-      // Update existing
-      transactionStorage.update(transaction.id, transaction);
-    } else {
-      transactionStorage.add(transaction);
-    }
-    setEditingTransaction(undefined);
-    loadData();
-  };
-
   const handleTransactionFromAI = (transaction: Transaction) => {
     // Transaction is already saved by AI chat, just reload data
     loadData();
   };
 
   const handleEditTransaction = (transaction: Transaction) => {
-    setEditingTransaction(transaction);
-    setShowTransactionForm(true);
+    router.push(`/transaction?id=${transaction.id}`);
+  };
+
+  const handleAddTransaction = () => {
+    router.push('/transaction');
   };
 
   const handleDeleteTransaction = (id: string) => {
@@ -95,7 +80,7 @@ export default function DashboardPage() {
       <LandingHeader backHref="/" />
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 py-4 overflow-hidden flex flex-col relative">
+      <main className="flex-1 container mx-auto px-4 sm:px-6 py-4 sm:py-6 overflow-hidden flex flex-col relative">
         {/* Gradient blob - top right */}
         <div
           className="fixed right-0 top-20 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full blur-3xl pointer-events-none z-0 opacity-40 md:opacity-60"
@@ -138,12 +123,12 @@ export default function DashboardPage() {
               <AIChat onTransactionAdded={handleTransactionFromAI} />
             </div>
           ) : (
-            <div className="flex-1 overflow-y-auto scrollbar-hide space-y-6">
+            <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4 sm:space-y-6">
               {/* Financial Overview */}
               <FinancialOverview summary={financialSummary} />
 
               {/* Charts and Lists */}
-              <div className="grid gap-6 lg:grid-cols-3">
+              <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
                 <SpendingChart data={monthlySpending} />
                 <BudgetProgress budgets={budgetProgress} onAddBudget={handleAddBudget} />
               </div>
@@ -151,7 +136,7 @@ export default function DashboardPage() {
               {/* Recent Transactions */}
               <RecentTransactions 
                 transactions={transactions} 
-                onAddTransaction={() => { setEditingTransaction(undefined); setShowTransactionForm(true); }} 
+                onAddTransaction={handleAddTransaction} 
                 onEditTransaction={handleEditTransaction}
                 onDeleteTransaction={handleDeleteTransaction}
                 initialLimit={5}
@@ -161,26 +146,16 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      {/* Transaction Form Modal */}
-      <TransactionForm
-        open={showTransactionForm}
-        onOpenChange={(open) => { setShowTransactionForm(open); if (!open) setEditingTransaction(undefined); }}
-        onSubmit={handleSubmitTransaction}
-        categories={categories}
-        transaction={editingTransaction}
-      />
-
       {/* Mobile Add Button */}
       {currentView === 'full' && (
-        <div className="fixed bottom-6 right-6 sm:hidden">
+        <Link href="/transaction" className="fixed bottom-6 right-6 sm:hidden z-[100]">
           <Button 
-            onClick={() => setShowTransactionForm(true)}
             size="lg"
-            className="rounded-full shadow-lg"
+            className="rounded-full shadow-lg bg-iris text-white hover:bg-iris/90 h-12 w-12 p-0"
           >
-            <Plus className="h-6 w-6" />
+            <Plus className="h-5 w-5" />
           </Button>
-        </div>
+        </Link>
       )}
     </div>
   );
