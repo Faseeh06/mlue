@@ -51,8 +51,27 @@ module.exports = {
         lime: "#d9f99d",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-        serif: ["var(--font-serif)", "Georgia", "serif"],
+        'providence': ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
+        'inter': ["var(--font-inter)", ...fontFamily.sans],
+        'body': ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
+        'heading': ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
+        sans: ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
+        serif: ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
+      },
+      fontSize: {
+        'xs': ['1.0625rem', { lineHeight: '1.375rem' }],     // 17px (was 12px) +5px total
+        'sm': ['1.1875rem', { lineHeight: '1.625rem' }],     // 19px (was 14px) +5px total
+        'base': ['1.3125rem', { lineHeight: '1.875rem' }],   // 21px (was 16px) +5px total
+        'lg': ['1.4375rem', { lineHeight: '1.875rem' }],     // 23px (was 18px) +5px total
+        'xl': ['1.5625rem', { lineHeight: '2.125rem' }],     // 25px (was 20px) +5px total
+        '2xl': ['1.8125rem', { lineHeight: '2.375rem' }],    // 29px (was 24px) +5px total
+        '3xl': ['2.1875rem', { lineHeight: '2.625rem' }],    // 35px (was 30px) +5px total
+        '4xl': ['2.5625rem', { lineHeight: '2.875rem' }],    // 41px (was 36px) +5px total
+        '5xl': ['3.3125rem', { lineHeight: '1' }],           // 53px (was 48px) +5px total
+        '6xl': ['4.0625rem', { lineHeight: '1' }],           // 65px (was 60px) +5px total
+        '7xl': ['4.8125rem', { lineHeight: '1' }],           // 77px (was 72px) +5px total
+        '8xl': ['6.3125rem', { lineHeight: '1' }],           // 101px (was 96px) +5px total
+        '9xl': ['8.3125rem', { lineHeight: '1' }],           // 133px (was 128px) +5px total
       },
     },
   },
