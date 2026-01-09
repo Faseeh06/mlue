@@ -33,6 +33,15 @@ export default function TransactionPage() {
 
   useEffect(() => {
     setMounted(true);
+    
+    // Store referrer when navigating to transaction page
+    if (typeof window !== 'undefined') {
+      const currentUrl = window.location.href;
+      if (!currentUrl.includes('transaction')) {
+        sessionStorage.setItem('transaction-referrer', currentUrl);
+      }
+    }
+    
     const allCategories = categoryStorage.getAll();
     setCategories(allCategories);
 
@@ -85,7 +94,8 @@ export default function TransactionPage() {
       transactionStorage.add(newTransaction);
     }
 
-    router.push('/dashboard');
+    // Navigate to dashboard with charts view after saving
+    router.push('/dashboard?view=full');
   };
 
   const handleTypeChange = (type: 'income' | 'expense') => {
@@ -232,15 +242,23 @@ export default function TransactionPage() {
 
             {/* Form Actions */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
-              <Link href="/dashboard" className="flex-1">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="w-full rounded-full border border-foreground/30 bg-transparent hover:bg-secondary h-12"
-                >
-                  Cancel
-                </Button>
-              </Link>
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => {
+                  const referrer = typeof window !== 'undefined' ? sessionStorage.getItem('transaction-referrer') : null;
+                  if (referrer && referrer.includes('/dashboard')) {
+                    router.push('/dashboard?view=full');
+                  } else if (referrer && !referrer.includes('/transaction')) {
+                    router.push(referrer);
+                  } else {
+                    router.push('/dashboard?view=full');
+                  }
+                }}
+                className="flex-1 rounded-full border border-foreground/30 bg-transparent hover:bg-secondary h-12"
+              >
+                Cancel
+              </Button>
               <Button 
                 type="submit"
                 className="flex-1 rounded-full bg-iris text-white hover:bg-iris/90 h-12"

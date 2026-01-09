@@ -61,7 +61,9 @@ html {
         `}</style>
       </head>
       <body className={`${instrumentSerif.variable} font-sans antialiased`}>
-        {children}
+        <div id="app-root">
+          {children}
+        </div>
         <Analytics />
         <script
           dangerouslySetInnerHTML={{

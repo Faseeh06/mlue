@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FinancialOverview } from "@/components/dashboard/financial-overview";
@@ -11,7 +11,7 @@ import { BudgetProgress } from "@/components/dashboard/budget-progress";
 import { AIChat } from "@/components/chat/ai-chat";
 import { DashboardToggle } from "@/components/dashboard/dashboard-toggle";
 import { Transaction, Category, Budget } from "@/lib/types";
-import { transactionStorage, categoryStorage, budgetStorage } from "@/lib/storage";
+import { transactionStorage, categoryStorage, budgetStorage, storage } from "@/lib/storage";
 import { 
   getFinancialSummary, 
   getMonthlySpending,
@@ -22,16 +22,47 @@ import LandingHeader from "@/components/common/landing-header";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [mounted, setMounted] = useState(false);
-  const [currentView, setCurrentView] = useState<'chat' | 'full'>('chat');
+  
+  // Get view from URL params, default to 'chat'
+  const viewParam = searchParams.get('view');
+  const [currentView, setCurrentView] = useState<'chat' | 'full'>(
+    viewParam === 'full' ? 'full' : 'chat'
+  );
 
   useEffect(() => {
     setMounted(true);
     loadData();
-  }, []);
+    
+    // Update view if URL param changes
+    if (viewParam === 'full') {
+      setCurrentView('full');
+    } else if (viewParam === 'chat') {
+      setCurrentView('chat');
+    }
+
+    // Listen for storage changes (sync across tabs)
+    const unsubscribe = storage.onStorageChange((key) => {
+      if (key.startsWith('mlue-finance-')) {
+        loadData();
+      }
+    });
+
+    // Refresh on focus
+    const handleFocus = () => {
+      loadData();
+    };
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [viewParam]);
 
   const loadData = () => {
     setTransactions(transactionStorage.getAll());
@@ -45,10 +76,18 @@ export default function DashboardPage() {
   };
 
   const handleEditTransaction = (transaction: Transaction) => {
+    // Store current view state
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('transaction-referrer', window.location.href);
+    }
     router.push(`/transaction?id=${transaction.id}`);
   };
 
   const handleAddTransaction = () => {
+    // Store current view state
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('transaction-referrer', window.location.href);
+    }
     router.push('/transaction');
   };
 
@@ -58,8 +97,18 @@ export default function DashboardPage() {
   };
 
   const handleAddBudget = () => {
-    // TODO: Implement budget form
-    console.log('Add budget clicked');
+    // Store current view state and referrer
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('budget-referrer', window.location.href);
+    }
+    router.push('/budget');
+  };
+  
+  const handleViewChange = (view: 'chat' | 'full') => {
+    setCurrentView(view);
+    // Update URL without page reload
+    const newUrl = view === 'full' ? '/dashboard?view=full' : '/dashboard';
+    window.history.replaceState({}, '', newUrl);
   };
 
   if (!mounted) {
@@ -111,7 +160,7 @@ export default function DashboardPage() {
           <div className="flex-shrink-0 mb-4">
             <DashboardToggle 
               currentView={currentView} 
-              onViewChange={setCurrentView}
+              onViewChange={handleViewChange}
             />
           </div>
 
