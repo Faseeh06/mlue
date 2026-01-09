@@ -237,3 +237,4 @@ npx cap open android
 - PWABuilder: https://www.pwabuilder.com/
 - Next.js Static Export: https://nextjs.org/docs/app/building-your-application/deploying/static-exports
 
+

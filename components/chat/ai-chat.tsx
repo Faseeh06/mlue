@@ -8,7 +8,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChatMessage, financeAI } from '@/lib/gemini';
 import { Transaction } from '@/lib/types';
-import { transactionStorage, storage } from '@/lib/storage';
+import { transactionStorage, storage, apiKeyStorage } from '@/lib/storage';
+import { useRouter } from 'next/navigation';
 import { formatCurrency, formatDate } from '@/lib/finance-utils';
 import { Send, Bot, User, TrendingUp, TrendingDown, Mic, MicOff } from 'lucide-react';
 
@@ -30,17 +31,12 @@ interface AIChatProps {
 const CHAT_STORAGE_KEY = 'mlue-finance-chat';
 
 export function AIChat({ onTransactionAdded }: AIChatProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: 'Hi there, how can I help you?',
-      timestamp: new Date(),
-    }
-  ]);
+  const router = useRouter();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const shouldSubmitOnEndRef = useRef(false);
@@ -49,20 +45,70 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Load chat history on mount
+  // Check for API key and load chat history on mount
   useEffect(() => {
-    try {
-      const saved = storage.get<unknown>(CHAT_STORAGE_KEY, null as any);
-      if (saved && Array.isArray(saved)) {
-        const restored = (saved as any[]).map((m) => ({
-          ...m,
-          timestamp: m.timestamp ? new Date(m.timestamp) : new Date(),
-        })) as ChatMessage[];
-        if (restored.length > 0) {
-          setMessages(restored);
+    const checkApiKey = () => {
+      const hasKey = apiKeyStorage.has();
+      setHasApiKey(hasKey);
+      
+      if (!hasKey) {
+        // Show welcome message asking for API key
+        setMessages([{
+          id: '1',
+          role: 'assistant',
+          content: 'Hi! To use AI chat features, please add your Gemini API key in Settings. You can get a free API key from Google AI Studio.',
+          timestamp: new Date(),
+        }]);
+      } else {
+        // Load chat history if API key exists
+        try {
+          const saved = storage.get<unknown>(CHAT_STORAGE_KEY, null as any);
+          if (saved && Array.isArray(saved)) {
+            const restored = (saved as any[]).map((m) => ({
+              ...m,
+              timestamp: m.timestamp ? new Date(m.timestamp) : new Date(),
+            })) as ChatMessage[];
+            if (restored.length > 0) {
+              setMessages(restored);
+            } else {
+              setMessages([{
+                id: '1',
+                role: 'assistant',
+                content: 'Hi there, how can I help you?',
+                timestamp: new Date(),
+              }]);
+            }
+          } else {
+            setMessages([{
+              id: '1',
+              role: 'assistant',
+              content: 'Hi there, how can I help you?',
+              timestamp: new Date(),
+            }]);
+          }
+        } catch {
+          setMessages([{
+            id: '1',
+            role: 'assistant',
+            content: 'Hi there, how can I help you?',
+            timestamp: new Date(),
+          }]);
         }
       }
-    } catch {}
+    };
+    
+    checkApiKey();
+    
+    // Listen for storage changes to update API key status
+    const unsubscribe = storage.onStorageChange((key) => {
+      if (key === 'mlue-finance-gemini-api-key') {
+        checkApiKey();
+      }
+    });
+    
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   // Persist chat history when messages change
@@ -157,6 +203,24 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
 
+    // Check for API key before sending
+    if (!apiKeyStorage.has()) {
+      const noKeyMessage: ChatMessage = {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: 'Please add your Gemini API key in Settings to use AI features. Click the button below to go to Settings.',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, {
+        id: (Date.now() - 1).toString(),
+        role: 'user',
+        content: inputMessage,
+        timestamp: new Date(),
+      }, noKeyMessage]);
+      setInputMessage('');
+      return;
+    }
+
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
@@ -171,15 +235,27 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
     try {
       const aiResponse = await financeAI.processMessage(userMessage.content, messages);
       
-      // If AI extracted transactions, save them
-      if (aiResponse.transactions && aiResponse.transactions.length > 0) {
-        aiResponse.transactions.forEach(transaction => {
-          transactionStorage.add(transaction);
-          onTransactionAdded(transaction);
-        });
-      }
+      // Check if API key is missing
+      if (aiResponse.content === 'API_KEY_MISSING') {
+        const noKeyMessage: ChatMessage = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: 'API key is missing or invalid. Please add your Gemini API key in Settings.',
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, noKeyMessage]);
+        setHasApiKey(false);
+      } else {
+        // If AI extracted transactions, save them
+        if (aiResponse.transactions && aiResponse.transactions.length > 0) {
+          aiResponse.transactions.forEach(transaction => {
+            transactionStorage.add(transaction);
+            onTransactionAdded(transaction);
+          });
+        }
 
-      setMessages(prev => [...prev, aiResponse]);
+        setMessages(prev => [...prev, aiResponse]);
+      }
     } catch (error) {
       console.error('Chat error:', error);
       const errorMessage: ChatMessage = {
@@ -219,10 +295,18 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
           <div className="flex-1">
             <h3 className="text-lg font-serif font-semibold text-foreground mb-1">AI Finance Assistant</h3>
             <p className="text-sm text-muted-foreground">
-              {isLoading ? 'Thinking...' : 'Ready to help with your finances'}
+              {!hasApiKey ? 'API key required' : isLoading ? 'Thinking...' : 'Ready to help with your finances'}
             </p>
           </div>
-          {/* Voice (TTS) removed */}
+          {!hasApiKey && (
+            <Button
+              onClick={() => router.push('/settings')}
+              size="sm"
+              className="rounded-full bg-iris text-white hover:bg-iris/90"
+            >
+              Add API Key
+            </Button>
+          )}
         </div>
       </div>
 
@@ -328,11 +412,11 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
             </Button>
             <Button
               onClick={handleSendMessage}
-              disabled={!inputMessage.trim() || isLoading}
+              disabled={!inputMessage.trim() || isLoading || !hasApiKey}
               size="sm"
               variant="default"
               className="h-7 w-7 p-0 rounded-full"
-              title="Send"
+              title={!hasApiKey ? "Add API key in Settings to send messages" : "Send"}
             >
               <Send className="h-3.5 w-3.5" />
             </Button>

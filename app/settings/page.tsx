@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { preferencesStorage, storage } from "@/lib/storage";
+import { preferencesStorage, apiKeyStorage, storage } from "@/lib/storage";
 import LandingHeader from "@/components/common/landing-header";
-import { DollarSign, Download, Trash2, CheckCircle2, Globe } from "lucide-react";
+import { DollarSign, Download, Trash2, CheckCircle2, Globe, Key, Eye, EyeOff, ExternalLink } from "lucide-react";
 
 const currencies = [
   { code: "USD", label: "US Dollar" },
@@ -22,12 +25,24 @@ const currencies = [
 ];
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [currency, setCurrency] = useState("USD");
   const [saved, setSaved] = useState(false);
+  const [apiKey, setApiKey] = useState("");
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [apiKeySaved, setApiKeySaved] = useState(false);
 
   useEffect(() => {
     const prefs = preferencesStorage.get();
     setCurrency(prefs.currency || "USD");
+    
+    // Load API key (masked)
+    const storedKey = apiKeyStorage.get();
+    if (storedKey) {
+      // Show only last 4 characters for security
+      const masked = '•'.repeat(Math.max(0, storedKey.length - 4)) + storedKey.slice(-4);
+      setApiKey(masked);
+    }
   }, []);
 
   // Auto-save on currency change
@@ -44,7 +59,7 @@ export default function SettingsPage() {
   }, [currency]);
 
   const resetAll = () => {
-    const ok = window.confirm('This will delete all local data (transactions, budgets, categories, accounts, settings). Continue?');
+    const ok = window.confirm('This will delete all local data (transactions, budgets, categories, accounts, settings, API key). Continue?');
     if (!ok) return;
     // Known keys used by the app
     try {
@@ -53,6 +68,7 @@ export default function SettingsPage() {
       storage.remove('mlue-finance-categories');
       storage.remove('mlue-finance-accounts');
       storage.remove('mlue-finance-preferences');
+      storage.remove('mlue-finance-gemini-api-key');
       // Reload to reflect defaults
       window.location.reload();
     } catch (e) {
@@ -63,6 +79,35 @@ export default function SettingsPage() {
   const exportCsv = () => {
     // Placeholder for future implementation
     alert('Export as CSV is coming soon.');
+  };
+
+  const handleApiKeySave = () => {
+    if (!apiKey.trim()) {
+      alert('Please enter an API key');
+      return;
+    }
+    
+    // If the key is masked (contains •), don't update
+    if (apiKey.includes('•')) {
+      alert('API key is already saved. Clear it first to enter a new one.');
+      return;
+    }
+    
+    apiKeyStorage.set(apiKey.trim());
+    setApiKeySaved(true);
+    // Mask the key after saving
+    const masked = '•'.repeat(Math.max(0, apiKey.length - 4)) + apiKey.slice(-4);
+    setApiKey(masked);
+    setShowApiKey(false);
+    setTimeout(() => setApiKeySaved(false), 2000);
+  };
+
+  const handleApiKeyClear = () => {
+    if (window.confirm('Are you sure you want to remove your API key? You will need to add it again to use AI features.')) {
+      apiKeyStorage.remove();
+      setApiKey("");
+      setShowApiKey(false);
+    }
   };
 
   return (
@@ -102,6 +147,98 @@ export default function SettingsPage() {
         </div>
 
         <div className="space-y-4">
+          {/* Gemini API Key */}
+          <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-iris/10 rounded-lg">
+                <Key className="h-5 w-5 text-iris" />
+              </div>
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-foreground mb-1">Gemini API Key</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Add your Google Gemini API key to enable AI chat features
+                  </p>
+                  <a
+                    href="https://aistudio.google.com/app/apikey"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-iris hover:underline flex items-center space-x-1 mb-3"
+                  >
+                    <span>Get your API key from Google AI Studio</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type={showApiKey ? "text" : "password"}
+                      value={apiKey}
+                      onChange={(e) => {
+                        // Only allow editing if not masked
+                        if (!apiKey.includes('•')) {
+                          setApiKey(e.target.value);
+                        }
+                      }}
+                      placeholder="Enter your Gemini API key"
+                      className="bg-background/50 border-border/50 rounded-lg flex-1"
+                      disabled={apiKey.includes('•')}
+                    />
+                    {apiKey && !apiKey.includes('•') && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowApiKey(!showApiKey)}
+                        className="h-10 w-10 p-0"
+                      >
+                        {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    )}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {!apiKey.includes('•') && (
+                      <Button
+                        onClick={handleApiKeySave}
+                        className="rounded-full bg-iris text-white hover:bg-iris/90"
+                        disabled={!apiKey.trim()}
+                      >
+                        Save API Key
+                      </Button>
+                    )}
+                    {apiKey.includes('•') && (
+                      <>
+                        <Button
+                          onClick={() => {
+                            setApiKey("");
+                            setShowApiKey(false);
+                          }}
+                          variant="outline"
+                          className="rounded-full border border-foreground/30 bg-transparent hover:bg-secondary"
+                        >
+                          Change API Key
+                        </Button>
+                        <Button
+                          onClick={handleApiKeyClear}
+                          variant="outline"
+                          className="rounded-full border border-red-500/30 bg-transparent text-red-500 hover:bg-red-500/10"
+                        >
+                          Remove
+                        </Button>
+                      </>
+                    )}
+                    {apiKeySaved && (
+                      <div className="flex items-center space-x-2 text-sm text-iris">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span>Saved</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           {/* Currency */}
           <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
             <div className="flex items-start space-x-4">

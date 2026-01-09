@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
   CATEGORIES: 'mlue-finance-categories',
   ACCOUNTS: 'mlue-finance-accounts',
   PREFS: 'mlue-finance-preferences',
+  GEMINI_API_KEY: 'mlue-finance-gemini-api-key',
 };
 
 // Default categories
@@ -232,4 +233,22 @@ export const accountStorage = {
 export const preferencesStorage = {
   get: (): Preferences => storage.get(STORAGE_KEYS.PREFS, { currency: 'USD', locale: 'en-US' }),
   set: (prefs: Preferences) => storage.set(STORAGE_KEYS.PREFS, prefs),
+};
+
+// Gemini API Key operations
+export const apiKeyStorage = {
+  get: (): string | null => {
+    const key = storage.get<string | null>(STORAGE_KEYS.GEMINI_API_KEY, null);
+    return key || null;
+  },
+  set: (key: string): boolean => {
+    return storage.set(STORAGE_KEYS.GEMINI_API_KEY, key);
+  },
+  remove: (): void => {
+    storage.remove(STORAGE_KEYS.GEMINI_API_KEY);
+  },
+  has: (): boolean => {
+    const key = apiKeyStorage.get();
+    return key !== null && key.trim().length > 0;
+  },
 };

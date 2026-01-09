@@ -1,9 +1,21 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Transaction } from './types';
 import { generateId } from './finance-utils';
+import { apiKeyStorage } from './storage';
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI('AIzaSyC5YlVzsdilgNIm0vyo_toSZJnYj3atinI');
+// Get API key from storage
+const getApiKey = (): string | null => {
+  return apiKeyStorage.get();
+};
+
+// Initialize Gemini AI with API key
+const initializeGenAI = (): GoogleGenerativeAI | null => {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    return null;
+  }
+  return new GoogleGenerativeAI(apiKey);
+};
 
 export interface ChatMessage {
   id: string;
@@ -14,7 +26,13 @@ export interface ChatMessage {
 }
 
 export class FinanceAI {
-  private model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  private getModel() {
+    const genAI = initializeGenAI();
+    if (!genAI) {
+      throw new Error('API_KEY_MISSING');
+    }
+    return genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  }
   
   private systemPrompt = `You are a helpful AI finance assistant. Your job is to:
 1. Help users track their income and expenses through natural conversation
@@ -104,7 +122,8 @@ If no financial transaction, respond with:
 Only return valid JSON.`;
 
       console.log('Sending prompt to Gemini...');
-      const result = await this.model.generateContent(fullPrompt);
+      const model = this.getModel();
+      const result = await model.generateContent(fullPrompt);
       const response = result.response.text();
       console.log('Gemini response:', response);
 
@@ -167,8 +186,8 @@ Only return valid JSON.`;
       let errorMessage = 'Sorry, I encountered an error processing your request. Please try again.';
       
       if (error instanceof Error) {
-        if (error.message.includes('API_KEY') || error.message.includes('invalid key')) {
-          errorMessage = 'API key issue. Please get a new API key from Google AI Studio (aistudio.google.com).';
+        if (error.message === 'API_KEY_MISSING' || error.message.includes('API_KEY') || error.message.includes('invalid key')) {
+          errorMessage = 'API_KEY_MISSING';
         } else if (error.message.includes('quota') || error.message.includes('limit')) {
           errorMessage = 'API quota exceeded. The free tier has limits. Please try again later.';
         } else if (error.message.includes('network') || error.message.includes('fetch')) {
@@ -177,6 +196,8 @@ Only return valid JSON.`;
           errorMessage = 'Model not found. Using gemini-1.5-flash-latest model.';
         }
         console.log('Specific error message:', error.message);
+      } else if (typeof error === 'string' && error === 'API_KEY_MISSING') {
+        errorMessage = 'API_KEY_MISSING';
       }
       
       return {
@@ -201,7 +222,8 @@ ${transactionSummary}
 
 Keep your response conversational and under 100 words.`;
 
-      const result = await this.model.generateContent(prompt);
+      const model = this.getModel();
+      const result = await model.generateContent(prompt);
       return result.response.text();
     } catch (error) {
       console.error('Error getting insights:', error);
