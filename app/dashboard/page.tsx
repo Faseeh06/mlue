@@ -98,17 +98,25 @@ export default function DashboardPage() {
       <main className="flex-1 container mx-auto px-4 py-4 overflow-hidden flex flex-col relative">
         {/* Gradient blob - top right */}
         <div
-          className="fixed right-0 top-20 h-[400px] w-[400px] rounded-full blur-3xl pointer-events-none z-0 opacity-40"
+          className="fixed right-0 top-20 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full blur-3xl pointer-events-none z-0 opacity-40 md:opacity-60"
           style={{
-            background: 'linear-gradient(to bottom right, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.2), rgba(217, 249, 157, 0.3))'
+            background: 'linear-gradient(to bottom right, rgba(216, 180, 254, 0.4), rgba(91, 33, 182, 0.3), rgba(217, 249, 157, 0.4))'
           }}
           aria-hidden="true"
         />
         {/* Gradient blob - bottom left */}
         <div
-          className="fixed bottom-0 left-0 h-[500px] w-[500px] rounded-full blur-3xl pointer-events-none z-0 opacity-30"
+          className="fixed bottom-0 left-0 h-[350px] w-[350px] md:h-[600px] md:w-[600px] rounded-full blur-3xl pointer-events-none z-0 opacity-30 md:opacity-50"
           style={{
-            background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.25), rgba(216, 180, 254, 0.15), rgba(217, 249, 157, 0.2))'
+            background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.3), rgba(216, 180, 254, 0.2), rgba(217, 249, 157, 0.3))'
+          }}
+          aria-hidden="true"
+        />
+        {/* Gradient blob - center - hidden on mobile */}
+        <div
+          className="hidden md:block fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full blur-3xl pointer-events-none z-0 opacity-30"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.25), rgba(217, 249, 157, 0.3))'
           }}
           aria-hidden="true"
         />

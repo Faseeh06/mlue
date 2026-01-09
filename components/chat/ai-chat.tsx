@@ -209,7 +209,7 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-secondary border border-border rounded-xl">
+    <div className="flex flex-col h-full overflow-hidden bg-transparent border border-border/50 rounded-xl backdrop-blur-sm">
       {/* Chat Header */}
       <div className="p-6 border-b border-border bg-gradient-to-r from-iris/5 to-transparent">
         <div className="flex items-center space-x-4">

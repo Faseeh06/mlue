@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { preferencesStorage, storage } from "@/lib/storage";
 import LandingHeader from "@/components/common/landing-header";
+import { DollarSign, Download, Trash2, CheckCircle2, Globe } from "lucide-react";
 
 const currencies = [
   { code: "USD", label: "US Dollar" },
@@ -24,16 +23,25 @@ const currencies = [
 
 export default function SettingsPage() {
   const [currency, setCurrency] = useState("USD");
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     const prefs = preferencesStorage.get();
     setCurrency(prefs.currency || "USD");
   }, []);
 
-  const save = () => {
-    const prefs = preferencesStorage.get();
-    preferencesStorage.set({ ...prefs, currency });
-  };
+  // Auto-save on currency change
+  useEffect(() => {
+    if (currency) {
+      const prefs = preferencesStorage.get();
+      const currentCurrency = prefs.currency || "USD";
+      if (currency !== currentCurrency) {
+        preferencesStorage.set({ ...prefs, currency });
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      }
+    }
+  }, [currency]);
 
   const resetAll = () => {
     const ok = window.confirm('This will delete all local data (transactions, budgets, categories, accounts, settings). Continue?');
@@ -59,84 +67,121 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Gradient blob */}
-      <div className="fixed top-1/2 right-0 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none z-0">
+      {/* Enhanced Gradient blobs */}
+      <div className="fixed top-1/2 right-0 -translate-y-1/2 w-[700px] h-[700px] pointer-events-none z-0">
         <div 
-          className="absolute inset-0 bg-gradient-to-l blur-3xl rounded-full opacity-30"
+          className="absolute inset-0 bg-gradient-to-l blur-3xl rounded-full opacity-50"
           style={{
-            background: 'linear-gradient(to left, rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.15), transparent)'
+            background: 'linear-gradient(to left, rgba(216, 180, 254, 0.4), rgba(91, 33, 182, 0.3), transparent)'
           }}
         />
       </div>
-      <div className="fixed bottom-0 left-0 w-[500px] h-[500px] pointer-events-none z-0">
+      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] pointer-events-none z-0">
         <div 
-          className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
+          className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-40"
           style={{
-            background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.2), rgba(216, 180, 254, 0.15), rgba(217, 249, 157, 0.2))'
+            background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.3), rgba(216, 180, 254, 0.25), rgba(217, 249, 157, 0.3))'
+          }}
+        />
+      </div>
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] pointer-events-none z-0">
+        <div 
+          className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-30"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.2), transparent)'
           }}
         />
       </div>
       
       <LandingHeader backHref="/dashboard" />
 
-      <main className="container mx-auto px-4 py-6 space-y-6 relative z-10">
-        {/* Currency */}
-        <Card className="p-6 bg-secondary border border-border max-w-xl rounded-xl">
-          <div className="space-y-4">
-            <div>
-              <div className="text-sm font-light mb-2 text-foreground">Currency</div>
-              <Select value={currency} onValueChange={setCurrency}>
-                <SelectTrigger className="bg-background border-border">
-                  <SelectValue placeholder="Select currency" />
-                </SelectTrigger>
-                <SelectContent>
-                  {currencies.map((c) => (
-                    <SelectItem key={c.code} value={c.code}>{c.code} - {c.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      <main className="container mx-auto px-4 py-8 max-w-2xl relative z-10">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-serif font-semibold text-foreground mb-2">Settings</h1>
+          <p className="text-muted-foreground">Manage your app preferences and data</p>
+        </div>
+
+        <div className="space-y-4">
+          {/* Currency */}
+          <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-iris/10 rounded-lg">
+                <Globe className="h-5 w-5 text-iris" />
+              </div>
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-foreground mb-1">Currency</h3>
+                  <p className="text-sm text-muted-foreground">Select your preferred currency for transactions</p>
+                </div>
+                <Select value={currency} onValueChange={setCurrency}>
+                  <SelectTrigger className="bg-background/50 border-border/50 rounded-lg">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencies.map((c) => (
+                      <SelectItem key={c.code} value={c.code}>{c.code} - {c.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {saved && (
+                  <div className="flex items-center space-x-2 text-sm text-iris">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Saved</span>
+                  </div>
+                )}
+              </div>
             </div>
+          </Card>
 
-            <div className="pt-2">
-              <Button onClick={save} variant="default">
-                Save
-              </Button>
+          {/* Export */}
+          <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-iris/10 rounded-lg">
+                <Download className="h-5 w-5 text-iris" />
+              </div>
+              <div className="flex-1 space-y-3">
+                <div>
+                  <h3 className="text-lg font-medium text-foreground mb-1">Export Data</h3>
+                  <p className="text-sm text-muted-foreground">Export your transactions as CSV file</p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="rounded-full border border-foreground/30 bg-transparent hover:bg-secondary"
+                  onClick={exportCsv}
+                  disabled
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export CSV
+                </Button>
+                <p className="text-xs text-muted-foreground italic">Coming soon</p>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
 
-        {/* Export */}
-        <Card className="p-6 bg-secondary border border-border max-w-xl rounded-xl">
-          <div className="space-y-3">
-            <div className="text-sm font-light text-foreground">Export Data</div>
-            <p className="text-sm text-muted-foreground font-light">Export your transactions as CSV. Coming soon.</p>
-            <Button
-              variant="outline"
-              className="w-fit"
-              onClick={exportCsv}
-              disabled
-              title="Export as CSV (coming soon)"
-            >
-              Export CSV
-            </Button>
-          </div>
-        </Card>
-
-        {/* Reset */}
-        <Card className="p-6 bg-secondary border border-border max-w-xl rounded-xl">
-          <div className="space-y-3">
-            <div className="text-sm font-light text-foreground">Reset the whole app</div>
-            <p className="text-sm text-muted-foreground font-light">Clear all local data and return to defaults. This cannot be undone.</p>
-            <Button
-              variant="outline"
-              className="w-fit"
-              onClick={resetAll}
-              title="Reset all local data"
-            >
-              Reset All
-            </Button>
-          </div>
-        </Card>
+          {/* Reset */}
+          <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-red-500/30 transition-colors">
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-red-500/10 rounded-lg">
+                <Trash2 className="h-5 w-5 text-red-500" />
+              </div>
+              <div className="flex-1 space-y-3">
+                <div>
+                  <h3 className="text-lg font-medium text-foreground mb-1">Reset All Data</h3>
+                  <p className="text-sm text-muted-foreground">Clear all local data and return to defaults. This action cannot be undone.</p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="rounded-full border border-red-500/30 bg-transparent text-red-500 hover:bg-red-500/10 hover:border-red-500/50"
+                  onClick={resetAll}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Reset All Data
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
       </main>
     </div>
   );
