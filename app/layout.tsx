@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 const instrumentSerif = Instrument_Serif({
@@ -64,9 +65,11 @@ html {
         <link rel="shortcut icon" type="image/png" href="/images/Rounded_logo.png" />
       </head>
       <body className={`${instrumentSerif.variable} font-sans antialiased`}>
-        <div id="app-root">
-          {children}
-        </div>
+        <ThemeProvider>
+          <div id="app-root">
+            {children}
+          </div>
+        </ThemeProvider>
         <Analytics />
         <script
           dangerouslySetInnerHTML={{

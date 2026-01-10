@@ -19,10 +19,12 @@ import {
 } from "@/lib/finance-utils";
 import { Plus } from "lucide-react";
 import LandingHeader from "@/components/common/landing-header";
+import { useTheme } from "@/hooks/use-theme";
 
 function DashboardPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { irisRgb, lilacRgb } = useTheme();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [budgets, setBudgets] = useState<Budget[]>([]);
@@ -134,7 +136,7 @@ function DashboardPageContent() {
         <div
           className="fixed right-0 top-20 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full blur-3xl pointer-events-none z-0 opacity-40 md:opacity-60"
           style={{
-            background: 'linear-gradient(to bottom right, rgba(216, 180, 254, 0.4), rgba(91, 33, 182, 0.3), rgba(217, 249, 157, 0.4))'
+            background: `linear-gradient(to bottom right, rgba(${lilacRgb}, 0.4), rgba(${irisRgb}, 0.3), rgba(217, 249, 157, 0.4))`
           }}
           aria-hidden="true"
         />
@@ -142,7 +144,7 @@ function DashboardPageContent() {
         <div
           className="fixed bottom-0 left-0 h-[350px] w-[350px] md:h-[600px] md:w-[600px] rounded-full blur-3xl pointer-events-none z-0 opacity-30 md:opacity-50"
           style={{
-            background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.3), rgba(216, 180, 254, 0.2), rgba(217, 249, 157, 0.3))'
+            background: `linear-gradient(to top right, rgba(${irisRgb}, 0.3), rgba(${lilacRgb}, 0.2), rgba(217, 249, 157, 0.3))`
           }}
           aria-hidden="true"
         />
@@ -150,7 +152,7 @@ function DashboardPageContent() {
         <div
           className="hidden md:block fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full blur-3xl pointer-events-none z-0 opacity-30"
           style={{
-            background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.25), rgba(217, 249, 157, 0.3))'
+            background: `linear-gradient(to bottom, rgba(${lilacRgb}, 0.3), rgba(${irisRgb}, 0.25), rgba(217, 249, 157, 0.3))`
           }}
           aria-hidden="true"
         />

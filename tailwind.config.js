@@ -43,10 +43,10 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Opus theme colors
+        // Opus theme colors (iris uses CSS variable for dynamic theming)
         surface: "#f4f1f9",
         ink: "#0f0518",
-        iris: "#5b21b6",
+        iris: "hsl(var(--iris))",
         lilac: "#d8b4fe",
         lime: "#d9f99d",
       },

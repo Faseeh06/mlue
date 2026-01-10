@@ -2,6 +2,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { useTheme } from "@/hooks/use-theme";
+import { getCurrentTheme, getThemeColors } from "@/lib/theme";
 
 interface SpendingChartProps {
   data: Array<{
@@ -13,6 +15,9 @@ interface SpendingChartProps {
 }
 
 export function SpendingChart({ data }: SpendingChartProps) {
+  const { theme, irisRgb, lilacRgb } = useTheme();
+  const themeColors = getThemeColors(theme);
+  
   const formatTooltipValue = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -35,13 +40,13 @@ export function SpendingChart({ data }: SpendingChartProps) {
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <defs>
-                <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#5b21b6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#5b21b6" stopOpacity={0.6}/>
+                <linearGradient id={`incomeGradient-${theme}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={themeColors.irisHex} stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor={themeColors.irisHex} stopOpacity={0.6}/>
                 </linearGradient>
-                <linearGradient id="expensesGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#d8b4fe" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#d8b4fe" stopOpacity={0.6}/>
+                <linearGradient id={`expensesGradient-${theme}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={themeColors.lilacHex} stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor={themeColors.lilacHex} stopOpacity={0.6}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
@@ -67,13 +72,13 @@ export function SpendingChart({ data }: SpendingChartProps) {
               <Legend />
               <Bar 
                 dataKey="income" 
-                fill="url(#incomeGradient)" 
+                fill={`url(#incomeGradient-${theme})`} 
                 name="Income"
                 radius={[2, 2, 0, 0]}
               />
               <Bar 
                 dataKey="expenses" 
-                fill="url(#expensesGradient)" 
+                fill={`url(#expensesGradient-${theme})`} 
                 name="Expenses"
                 radius={[2, 2, 0, 0]}
               />

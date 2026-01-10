@@ -1,11 +1,14 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { useTheme } from "@/hooks/use-theme"
 import LandingHeader from "@/components/common/landing-header"
 import { Smartphone, Download, Phone } from "lucide-react"
 
 export default function DownloadPage() {
+  const { irisRgb, lilacRgb } = useTheme();
   return (
     <main className="min-h-screen bg-background">
       {/* Download Section with integrated header */}
@@ -22,7 +25,7 @@ export default function DownloadPage() {
             <div 
               className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-40"
               style={{
-                background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.35), rgba(91, 33, 182, 0.25), rgba(217, 249, 157, 0.2))'
+                background: `linear-gradient(to bottom, rgba(${lilacRgb}, 0.35), rgba(${irisRgb}, 0.25), rgba(217, 249, 157, 0.2))`
               }}
             />
           </div>
@@ -31,7 +34,7 @@ export default function DownloadPage() {
             <div 
               className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
               style={{
-                background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.2), rgba(216, 180, 254, 0.2), rgba(217, 249, 157, 0.15))'
+                background: `linear-gradient(to top right, rgba(${irisRgb}, 0.2), rgba(${lilacRgb}, 0.2), rgba(217, 249, 157, 0.15))`
               }}
             />
           </div>

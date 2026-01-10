@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { preferencesStorage, apiKeyStorage, aiModelStorage, voiceModeStorage, storage, type AIModel, type VoiceMode } from "@/lib/storage";
+import { preferencesStorage, apiKeyStorage, aiModelStorage, voiceModeStorage, themeStorage, storage, type AIModel, type VoiceMode, type ThemeColor } from "@/lib/storage";
 import { isWhisperAvailable } from "@/lib/whisper";
+import { applyTheme } from "@/lib/theme";
+import { useTheme } from "@/hooks/use-theme";
 import LandingHeader from "@/components/common/landing-header";
-import { DollarSign, Download, Trash2, CheckCircle2, Globe, Key, Eye, EyeOff, ExternalLink, Sparkles, Mic } from "lucide-react";
+import { DollarSign, Download, Trash2, CheckCircle2, Globe, Key, Eye, EyeOff, ExternalLink, Sparkles, Mic, Palette } from "lucide-react";
 
 const currencies = [
   { code: "USD", label: "US Dollar" },
@@ -27,6 +29,7 @@ const currencies = [
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { irisRgb, lilacRgb } = useTheme();
   const [currency, setCurrency] = useState("USD");
   const [saved, setSaved] = useState(false);
   const [aiModel, setAiModel] = useState<AIModel>("gemini");
@@ -37,6 +40,7 @@ export default function SettingsPage() {
   const [apiKeySaved, setApiKeySaved] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [voiceMode, setVoiceMode] = useState<VoiceMode>("browser");
+  const [theme, setTheme] = useState<ThemeColor>("purple");
 
   useEffect(() => {
     const prefs = preferencesStorage.get();
@@ -50,6 +54,10 @@ export default function SettingsPage() {
     // Load voice mode preference
     const voice = voiceModeStorage.get();
     setVoiceMode(voice);
+    
+    // Load theme preference
+    const themeColor = themeStorage.get();
+    setTheme(themeColor);
     
     // Load API keys (masked)
     const storedGeminiKey = apiKeyStorage.get();
@@ -107,6 +115,7 @@ export default function SettingsPage() {
       storage.remove('mlue-finance-groq-api-key');
       storage.remove('mlue-finance-ai-model');
       storage.remove('mlue-finance-voice-mode');
+      storage.remove('mlue-finance-theme');
       // Reload to reflect defaults
       window.location.reload();
     } catch (e) {
@@ -138,6 +147,14 @@ export default function SettingsPage() {
       setTimeout(() => setSaved(false), 2000);
     }
   }, [voiceMode, isInitialLoad]);
+
+  // Handle theme change
+  const handleThemeChange = (value: ThemeColor) => {
+    setTheme(value);
+    applyTheme(value);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
 
   const handleGeminiApiKeySave = () => {
     if (!geminiApiKey.trim()) {
@@ -203,7 +220,7 @@ export default function SettingsPage() {
       <div
         className="fixed right-0 top-20 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full blur-3xl pointer-events-none z-0 opacity-40 md:opacity-60"
         style={{
-          background: 'linear-gradient(to bottom right, rgba(216, 180, 254, 0.4), rgba(91, 33, 182, 0.3), rgba(217, 249, 157, 0.4))'
+          background: `linear-gradient(to bottom right, rgba(${lilacRgb}, 0.4), rgba(${irisRgb}, 0.3), rgba(217, 249, 157, 0.4))`
         }}
         aria-hidden="true"
       />
@@ -211,7 +228,7 @@ export default function SettingsPage() {
       <div
         className="fixed bottom-0 left-0 h-[350px] w-[350px] md:h-[600px] md:w-[600px] rounded-full blur-3xl pointer-events-none z-0 opacity-30 md:opacity-50"
         style={{
-          background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.3), rgba(216, 180, 254, 0.2), rgba(217, 249, 157, 0.3))'
+          background: `linear-gradient(to top right, rgba(${irisRgb}, 0.3), rgba(${lilacRgb}, 0.2), rgba(217, 249, 157, 0.3))`
         }}
         aria-hidden="true"
       />
@@ -219,7 +236,7 @@ export default function SettingsPage() {
       <div
         className="hidden md:block fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full blur-3xl pointer-events-none z-0 opacity-30"
         style={{
-          background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.25), rgba(217, 249, 157, 0.3))'
+          background: `linear-gradient(to bottom, rgba(${lilacRgb}, 0.3), rgba(${irisRgb}, 0.25), rgba(217, 249, 157, 0.3))`
         }}
         aria-hidden="true"
       />
@@ -493,6 +510,51 @@ export default function SettingsPage() {
                     ✓ Groq Whisper is available. Using more accurate transcription.
                   </p>
                 )}
+                {saved && (
+                  <div className="flex items-center space-x-2 text-sm text-iris">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Saved</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
+
+          {/* Theme Color */}
+          <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-iris/10 rounded-lg">
+                <Palette className="h-5 w-5 text-iris" />
+              </div>
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-foreground mb-1">Theme Color</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Choose your preferred theme color: Purple (default) or Orange
+                  </p>
+                </div>
+                <Select 
+                  value={theme} 
+                  onValueChange={handleThemeChange}
+                >
+                  <SelectTrigger className="bg-background/50 border-border/50 rounded-lg">
+                    <SelectValue placeholder="Select theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="purple">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'hsl(var(--iris))' }} />
+                        <span>Purple</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="orange">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-[#FD8A6B]" />
+                        <span>Orange</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 {saved && (
                   <div className="flex items-center space-x-2 text-sm text-iris">
                     <CheckCircle2 className="h-4 w-4" />

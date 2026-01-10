@@ -1,11 +1,37 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import LandingHeader from "@/components/common/landing-header"
 import { TrendingUp, Shield, Zap, BarChart3, ArrowRight, CheckCircle2, DollarSign, Smartphone } from "lucide-react"
+import { getCurrentTheme, getThemeColors } from "@/lib/theme"
 
 export default function Page() {
+  const [theme, setTheme] = useState(getCurrentTheme());
+  
+  useEffect(() => {
+    // Listen for theme changes
+    const updateTheme = () => {
+      setTheme(getCurrentTheme());
+    };
+    
+    const interval = setInterval(updateTheme, 500);
+    const handleStorageChange = () => {
+      updateTheme();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  const themeColors = getThemeColors(theme);
+  const irisRgb = themeColors.irisRgb;
+  const lilacRgb = themeColors.lilacRgb;
+  
   return (
     <main className="bg-background">
       {/* Hero Section with integrated header */}
@@ -22,14 +48,14 @@ export default function Page() {
             <div 
               className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-40"
               style={{
-                background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.35), rgba(91, 33, 182, 0.25), rgba(217, 249, 157, 0.2))'
+                background: `linear-gradient(to bottom, rgba(${lilacRgb}, 0.35), rgba(${irisRgb}, 0.25), rgba(217, 249, 157, 0.2))`
               }}
             />
           </div>
           
           <div className="relative max-w-6xl mx-auto text-center z-10">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-foreground leading-tight mb-8">
-              Manage your <span className="text-iris drop-shadow-[0_0_8px_rgba(91,33,182,0.4)]">money</span>,
+              Manage your <span className="text-iris" style={{ textShadow: `0 0 8px rgba(${irisRgb}, 0.4)` }}>money</span>,
               <br />
               <em className="italic">effortlessly.</em>
             </h1>
@@ -64,7 +90,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
-              background: 'linear-gradient(to bottom, rgba(217, 249, 157, 0.2), rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.2))'
+              background: `linear-gradient(to bottom, rgba(217, 249, 157, 0.2), rgba(${lilacRgb}, 0.25), rgba(${irisRgb}, 0.2))`
             }}
           />
         </div>
@@ -73,7 +99,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
-              background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.2), rgba(216, 180, 254, 0.2), rgba(217, 249, 157, 0.15))'
+              background: `linear-gradient(to top right, rgba(${irisRgb}, 0.2), rgba(${lilacRgb}, 0.2), rgba(217, 249, 157, 0.15))`
             }}
           />
         </div>
@@ -93,7 +119,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
-              background: 'linear-gradient(to bottom, rgba(91, 33, 182, 0.2), rgba(216, 180, 254, 0.25), rgba(217, 249, 157, 0.2))'
+              background: `linear-gradient(to bottom, rgba(${irisRgb}, 0.2), rgba(${lilacRgb}, 0.25), rgba(217, 249, 157, 0.2))`
             }}
           />
         </div>
@@ -102,7 +128,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
-              background: 'linear-gradient(to top right, rgba(217, 249, 157, 0.2), rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.2))'
+              background: `linear-gradient(to top right, rgba(217, 249, 157, 0.2), rgba(${lilacRgb}, 0.25), rgba(${irisRgb}, 0.2))`
             }}
           />
         </div>
@@ -161,7 +187,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
-              background: 'linear-gradient(to bottom, rgba(217, 249, 157, 0.2), rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.2))'
+              background: `linear-gradient(to bottom, rgba(217, 249, 157, 0.2), rgba(${lilacRgb}, 0.25), rgba(${irisRgb}, 0.2))`
             }}
           />
         </div>
@@ -170,7 +196,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
-              background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.2), rgba(216, 180, 254, 0.2), rgba(217, 249, 157, 0.2))'
+              background: `linear-gradient(to top right, rgba(${irisRgb}, 0.2), rgba(${lilacRgb}, 0.2), rgba(217, 249, 157, 0.2))`
             }}
           />
         </div>
@@ -199,7 +225,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
-              background: 'linear-gradient(to bottom, rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.2), rgba(217, 249, 157, 0.2))'
+              background: `linear-gradient(to bottom, rgba(${lilacRgb}, 0.25), rgba(${irisRgb}, 0.2), rgba(217, 249, 157, 0.2))`
             }}
           />
         </div>
@@ -208,7 +234,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
-              background: 'linear-gradient(to top right, rgba(217, 249, 157, 0.15), rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.2))'
+              background: `linear-gradient(to top right, rgba(217, 249, 157, 0.15), rgba(${lilacRgb}, 0.25), rgba(${irisRgb}, 0.2))`
             }}
           />
         </div>
@@ -245,7 +271,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
-              background: 'linear-gradient(to bottom, rgba(217, 249, 157, 0.2), rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.2))'
+              background: `linear-gradient(to bottom, rgba(217, 249, 157, 0.2), rgba(${lilacRgb}, 0.25), rgba(${irisRgb}, 0.2))`
             }}
           />
         </div>
@@ -254,7 +280,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
-              background: 'linear-gradient(to top right, rgba(91, 33, 182, 0.2), rgba(216, 180, 254, 0.3), rgba(217, 249, 157, 0.2))'
+              background: `linear-gradient(to top right, rgba(${irisRgb}, 0.2), rgba(${lilacRgb}, 0.3), rgba(217, 249, 157, 0.2))`
             }}
           />
         </div>
@@ -282,7 +308,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
-              background: 'linear-gradient(to bottom, rgba(217, 249, 157, 0.2), rgba(216, 180, 254, 0.25), rgba(91, 33, 182, 0.2))'
+              background: `linear-gradient(to bottom, rgba(217, 249, 157, 0.2), rgba(${lilacRgb}, 0.25), rgba(${irisRgb}, 0.2))`
             }}
           />
         </div>
@@ -291,7 +317,7 @@ export default function Page() {
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-40"
             style={{
-              background: 'linear-gradient(to top right, rgba(216, 180, 254, 0.3), rgba(91, 33, 182, 0.25), rgba(217, 249, 157, 0.3))'
+              background: `linear-gradient(to top right, rgba(${lilacRgb}, 0.3), rgba(${irisRgb}, 0.25), rgba(217, 249, 157, 0.3))`
             }}
           />
         </div>

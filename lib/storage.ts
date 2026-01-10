@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
   GROQ_API_KEY: 'mlue-finance-groq-api-key',
   AI_MODEL: 'mlue-finance-ai-model',
   VOICE_MODE: 'mlue-finance-voice-mode',
+  THEME: 'mlue-finance-theme',
 };
 
 // Default categories
@@ -304,5 +305,17 @@ export const voiceModeStorage = {
   },
   set: (mode: VoiceMode): boolean => {
     return storage.set(STORAGE_KEYS.VOICE_MODE, mode);
+  },
+};
+
+// Theme preference
+export type ThemeColor = 'purple' | 'orange';
+
+export const themeStorage = {
+  get: (): ThemeColor => {
+    return storage.get<ThemeColor>(STORAGE_KEYS.THEME, 'purple');
+  },
+  set: (theme: ThemeColor): boolean => {
+    return storage.set(STORAGE_KEYS.THEME, theme);
   },
 };
