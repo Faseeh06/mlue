@@ -157,11 +157,54 @@ html {
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {
-                      console.log('SW registered: ', registration);
+                      console.log('[SW] Registered successfully: ', registration.scope);
+                      
+                      // Check for updates periodically (every hour)
+                      setInterval(function() {
+                        registration.update();
+                      }, 3600000);
+                      
+                      // Handle updates
+                      registration.addEventListener('updatefound', function() {
+                        const newWorker = registration.installing;
+                        if (newWorker) {
+                          newWorker.addEventListener('statechange', function() {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                              // New service worker available
+                              console.log('[SW] New service worker available. Reload to update.');
+                              // Optionally show a notification to the user
+                              if (confirm('A new version is available. Reload now?')) {
+                                newWorker.postMessage({ action: 'skipWaiting' });
+                                window.location.reload();
+                              }
+                            }
+                          });
+                        }
+                      });
                     })
                     .catch(function(registrationError) {
-                      console.log('SW registration failed: ', registrationError);
+                      console.error('[SW] Registration failed: ', registrationError);
                     });
+                  
+                  // Listen for controller changes (when SW takes control)
+                  navigator.serviceWorker.addEventListener('controllerchange', function() {
+                    console.log('[SW] Controller changed');
+                  });
+                  
+                  // Online/Offline detection
+                  function updateOnlineStatus() {
+                    if (!navigator.onLine) {
+                      console.log('[SW] App is now offline');
+                      document.documentElement.setAttribute('data-offline', 'true');
+                    } else {
+                      console.log('[SW] App is now online');
+                      document.documentElement.removeAttribute('data-offline');
+                    }
+                  }
+                  
+                  window.addEventListener('online', updateOnlineStatus);
+                  window.addEventListener('offline', updateOnlineStatus);
+                  updateOnlineStatus();
                 });
               }
             `,

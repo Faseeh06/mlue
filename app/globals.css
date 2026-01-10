@@ -160,3 +160,30 @@ body {
   }
 }
 
+/* Offline status indicator */
+@layer base {
+  /* Show a subtle indicator when offline */
+  html[data-offline="true"]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      #ef4444 0px,
+      #ef4444 10px,
+      #fca5a5 10px,
+      #fca5a5 20px
+    );
+    z-index: 9999;
+    animation: offline-pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes offline-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+}
+
