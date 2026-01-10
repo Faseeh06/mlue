@@ -271,4 +271,3 @@ Keep your response conversational and under 100 words.`;
 }
 
 export const groqFinanceAI = new GroqFinanceAI();
-

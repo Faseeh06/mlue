@@ -8,19 +8,10 @@
   }
 }
 
-/* Custom Providence Font */
-@font-face {
-  font-family: 'Providence';
-  src: url('/Font/providence/providence-sans.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
 @layer base {
   :root {
-    --font-providence: 'Providence', Arial, Helvetica, sans-serif;
-    --font-inter: var(--font-inter);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -95,137 +86,7 @@
   * {
     @apply border-border;
   }
-  
-  /* Apply Providence to HTML elements, but not SVG */
-  html, body, h1, h2, h3, h4, h5, h6, p, span, div, li, label, input, textarea, button, select, a,
-  .font-heading, .font-serif, .font-display, .font-body,
-  .dashboard, [class*="dashboard"]:not(.spending-chart-container):not(.spending-chart-container *),
-  [class*="amount"]:not(svg):not(text), [class*="balance"]:not(svg):not(text),
-  [class*="price"]:not(svg):not(text), [class*="transaction"]:not(svg):not(text),
-  [class*="budget"]:not(svg):not(text), .font-numbers:not(svg):not(text) {
-    font-family: 'Providence', Arial, Helvetica, sans-serif !important;
-    font-weight: 400;
-  }
-  
-  html {
-    font-family: 'Providence', Arial, Helvetica, sans-serif !important;
-    font-weight: 400;
-    font-size: 16px; /* Base font size reduced by 1px more (was 17px) */
-  }
-  
   body {
     @apply bg-background text-foreground;
-    font-family: 'Providence', Arial, Helvetica, sans-serif !important;
-    font-weight: 400;
-    font-size: 16px; /* Base font size reduced by 1px more (was 17px) */
-    letter-spacing: -0.01em;
   }
-  
-  /* Headings use the custom Providence font */
-  h1, h2, h3, h4, h5, h6,
-  .font-heading,
-  .font-serif,
-  .font-display {
-    font-family: 'Providence', Arial, Helvetica, sans-serif !important;
-    font-weight: 400 !important;
-    letter-spacing: -0.01em;
-  }
-  
-  /* All text elements use Providence (but not SVG text) */
-  p, span, div, li, label, input, textarea, button, select, a,
-  .font-body,
-  .dashboard,
-  [class*="dashboard"]:not(.spending-chart-container):not(.spending-chart-container *),
-  [class*="amount"]:not(svg):not(text),
-  [class*="balance"]:not(svg):not(text),
-  [class*="price"]:not(svg):not(text),
-  [class*="transaction"]:not(svg):not(text),
-  [class*="budget"]:not(svg):not(text),
-  .font-numbers:not(svg):not(text) {
-    font-family: 'Providence', Arial, Helvetica, sans-serif !important;
-    font-weight: 400;
-  }
-}
-
-/* Chart container - override global font with Arial (outside @layer for higher priority) */
-.spending-chart-container,
-.spending-chart-container *,
-.spending-chart-container svg,
-.spending-chart-container svg text,
-.spending-chart-container text,
-.spending-chart-container .recharts-wrapper,
-.spending-chart-container .recharts-wrapper *,
-.spending-chart-container .recharts-wrapper text,
-.spending-chart-container .recharts-wrapper svg,
-.spending-chart-container .recharts-wrapper svg text,
-.spending-chart-container .recharts-cartesian-axis,
-.spending-chart-container .recharts-cartesian-axis-tick,
-.spending-chart-container .recharts-cartesian-axis-tick-value,
-.spending-chart-container .recharts-label,
-.spending-chart-container .recharts-label-list,
-.spending-chart-container .recharts-legend-wrapper,
-.spending-chart-container .recharts-legend-item,
-.spending-chart-container .recharts-legend-item-text,
-.spending-chart-container .recharts-tooltip-wrapper,
-.spending-chart-container .recharts-tooltip-label,
-.spending-chart-container .recharts-tooltip-item,
-.spending-chart-container .recharts-tooltip-item-value,
-.spending-chart-container .recharts-default-tooltip,
-.spending-chart-container .recharts-default-tooltip p,
-.spending-chart-container .recharts-default-tooltip span {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-weight: 400 !important;
-}
-
-/* Also target SVG text elements directly - must be very specific */
-svg text,
-.spending-chart-container svg text,
-.recharts-wrapper svg text {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-weight: 400 !important;
-}
-
-/* Even more specific for Recharts SVG elements */
-.recharts-wrapper svg text,
-.recharts-cartesian-axis svg text,
-.recharts-cartesian-axis-tick svg text {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-weight: 400 !important;
-}
-
-/* Chart elements - override global font with Arial (outside @layer for higher priority) */
-.chart-container,
-.chart-container *,
-.chart-container svg,
-.chart-container svg text,
-.chart-container .recharts-wrapper,
-.chart-container .recharts-wrapper *,
-.chart-container .recharts-wrapper text,
-.chart-container .recharts-wrapper svg,
-.chart-container .recharts-wrapper svg text,
-.chart-container .recharts-cartesian-axis,
-.chart-container .recharts-cartesian-axis-tick,
-.chart-container .recharts-cartesian-axis-tick-value,
-.chart-container .recharts-label,
-.chart-container .recharts-label-list,
-.chart-container .recharts-legend-wrapper,
-.chart-container .recharts-legend-item,
-.chart-container .recharts-legend-item-text,
-.chart-container .recharts-tooltip-wrapper,
-.chart-container .recharts-tooltip-label,
-.chart-container .recharts-tooltip-item,
-.chart-container .recharts-tooltip-item-value,
-.chart-container .recharts-default-tooltip,
-.chart-container .recharts-default-tooltip p,
-.chart-container .recharts-default-tooltip span {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-weight: 400 !important;
-}
-
-/* Also target SVG text elements directly */
-svg text,
-.chart-container svg text,
-.recharts-wrapper svg text {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-weight: 400 !important;
 }

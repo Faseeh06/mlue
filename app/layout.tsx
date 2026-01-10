@@ -1,14 +1,15 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
+import { Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-// Clean complementary font for body text and UI
-const inter = Inter({
+const instrumentSerif = Instrument_Serif({
   subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
 })
 
 export const metadata: Metadata = {
@@ -48,13 +49,21 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en">
       <head>
+        <style>{`
+html {
+  font-family: ${GeistSans.style.fontFamily};
+  --font-sans: ${GeistSans.variable};
+  --font-mono: ${GeistMono.variable};
+  --font-serif: ${instrumentSerif.variable};
+}
+        `}</style>
         <link rel="icon" type="image/png" href="/images/Rounded_logo.png" sizes="32x32" />
         <link rel="icon" type="image/png" href="/images/Rounded_logo.png" sizes="16x16" />
         <link rel="shortcut icon" type="image/png" href="/images/Rounded_logo.png" />
       </head>
-      <body className="antialiased">
+      <body className={`${instrumentSerif.variable} font-sans antialiased`}>
         <div id="app-root">
           {children}
         </div>

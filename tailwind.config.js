@@ -51,27 +51,8 @@ module.exports = {
         lime: "#d9f99d",
       },
       fontFamily: {
-        'providence': ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
-        'inter': ["var(--font-inter)", ...fontFamily.sans],
-        'body': ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
-        'heading': ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
-        sans: ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
-        serif: ["'Providence'", 'Arial', 'Helvetica', ...fontFamily.sans],
-      },
-      fontSize: {
-        'xs': ['0.75rem', { lineHeight: '1.125rem' }],       // 12px (reduced by 1px from 13px)
-        'sm': ['0.875rem', { lineHeight: '1.25rem' }],       // 14px (reduced by 1px from 15px)
-        'base': ['1rem', { lineHeight: '1.5rem' }],          // 16px (reduced by 1px from 17px)
-        'lg': ['1.125rem', { lineHeight: '1.625rem' }],      // 18px (reduced by 1px from 19px)
-        'xl': ['1.25rem', { lineHeight: '1.75rem' }],        // 20px (reduced by 1px from 21px)
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],           // 24px (reduced by 1px from 25px)
-        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],      // 30px (reduced by 1px from 31px)
-        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],        // 36px (reduced by 1px from 37px)
-        '5xl': ['3rem', { lineHeight: '1' }],                // 48px (reduced by 1px from 49px)
-        '6xl': ['3.75rem', { lineHeight: '1' }],             // 60px (reduced by 1px from 61px)
-        '7xl': ['4.5rem', { lineHeight: '1' }],              // 72px (reduced by 1px from 73px)
-        '8xl': ['6rem', { lineHeight: '1' }],                // 96px (reduced by 1px from 97px)
-        '9xl': ['8rem', { lineHeight: '1' }],                // 128px (reduced by 1px from 129px)
+        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
       },
     },
   },

@@ -65,4 +65,3 @@ export async function transcribeAudioWithWhisper(audioBlob: Blob): Promise<strin
 export function isWhisperAvailable(): boolean {
   return apiKeyStorage.hasGroq();
 }
-

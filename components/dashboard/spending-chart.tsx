@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 
@@ -14,72 +13,11 @@ interface SpendingChartProps {
 }
 
 export function SpendingChart({ data }: SpendingChartProps) {
-  // Apply Arial font to all SVG text elements in the chart
-  useEffect(() => {
-    const applyChartFont = () => {
-      const chartContainer = document.querySelector('.spending-chart-container');
-      if (chartContainer) {
-        const svgTextElements = chartContainer.querySelectorAll('svg text, text, .recharts-wrapper text');
-        svgTextElements.forEach((textEl: any) => {
-          if (textEl && textEl.style) {
-            textEl.style.fontFamily = 'Arial, Helvetica, sans-serif';
-            textEl.style.fontWeight = '400';
-            textEl.setAttribute('font-family', 'Arial, Helvetica, sans-serif');
-            textEl.setAttribute('font-weight', '400');
-          }
-        });
-      }
-    };
-    
-    // Apply immediately and also after delays to catch dynamically rendered elements
-    applyChartFont();
-    const timer1 = setTimeout(applyChartFont, 100);
-    const timer2 = setTimeout(applyChartFont, 300);
-    const timer3 = setTimeout(applyChartFont, 500);
-    
-    // Use MutationObserver to watch for new SVG elements being added
-    const chartContainer = document.querySelector('.spending-chart-container');
-    let observer: MutationObserver | null = null;
-    
-    if (chartContainer) {
-      observer = new MutationObserver(() => {
-        applyChartFont();
-      });
-      
-      observer.observe(chartContainer, {
-        childList: true,
-        subtree: true,
-        attributes: false,
-      });
-    }
-    
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      if (observer) {
-        observer.disconnect();
-      }
-    };
-  }, [data]);
-
   const formatTooltipValue = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(value);
-  };
-
-  const formatYAxisLabel = (value: number) => {
-    if (value >= 1000) {
-      return `${(value / 1000).toFixed(0)}K`;
-    }
-    return `${Math.round(value)}`;
-  };
-
-  const formatMonthLabel = (month: string) => {
-    // Take first 3 letters if month is longer
-    return month.substring(0, 3);
   };
 
   return (
@@ -94,7 +32,6 @@ export function SpendingChart({ data }: SpendingChartProps) {
             No data available for chart
           </div>
         ) : (
-          <div className="spending-chart-container">
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <defs>
@@ -110,59 +47,24 @@ export function SpendingChart({ data }: SpendingChartProps) {
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis 
                 dataKey="month" 
-                fontSize={11}
-                tickFormatter={formatMonthLabel}
-                tick={{ 
-                  fill: 'hsl(var(--muted-foreground))', 
-                  fontWeight: 400
-                }}
-                label={{ 
-                  value: 'Month', 
-                  position: 'insideBottom', 
-                  offset: -5, 
-                  style: { 
-                    fontSize: '9px',
-                    fontWeight: 400,
-                    fill: 'hsl(var(--foreground))'
-                  } 
-                }}
+                className="text-muted-foreground"
+                fontSize={12}
               />
               <YAxis 
-                fontSize={11}
-                tickFormatter={formatYAxisLabel}
-                tick={{ 
-                  fill: 'hsl(var(--muted-foreground))',
-                  fontWeight: 400
-                }}
-                label={{ 
-                  value: 'Amount', 
-                  angle: -90, 
-                  position: 'insideLeft', 
-                  style: { 
-                    fontSize: '9px',
-                    fontWeight: 400,
-                    fill: 'hsl(var(--foreground))'
-                  } 
-                }}
+                className="text-muted-foreground"
+                fontSize={12}
+                tickFormatter={formatTooltipValue}
               />
               <Tooltip 
                 formatter={formatTooltipValue}
+                labelClassName="text-foreground"
                 contentStyle={{
                   backgroundColor: 'hsl(var(--background))',
                   border: '1px solid hsl(var(--border))',
                   borderRadius: '6px',
-                  fontSize: '9px',
-                }}
-                labelStyle={{
-                  fontWeight: 500,
                 }}
               />
-              <Legend 
-                wrapperStyle={{
-                  fontSize: '9px',
-                  fontWeight: 400,
-                }}
-              />
+              <Legend />
               <Bar 
                 dataKey="income" 
                 fill="url(#incomeGradient)" 
@@ -177,7 +79,6 @@ export function SpendingChart({ data }: SpendingChartProps) {
               />
             </BarChart>
           </ResponsiveContainer>
-          </div>
         )}
       </CardContent>
     </Card>
