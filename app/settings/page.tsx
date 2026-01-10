@@ -530,7 +530,7 @@ export default function SettingsPage() {
                 <div>
                   <h3 className="text-lg font-medium text-foreground mb-1">Theme Color</h3>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Choose your preferred theme color: Purple (default) or Orange
+                    Choose your preferred theme color for the app
                   </p>
                 </div>
                 <Select 
@@ -543,7 +543,7 @@ export default function SettingsPage() {
                   <SelectContent>
                     <SelectItem value="purple">
                       <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'hsl(var(--iris))' }} />
+                        <div className="w-4 h-4 rounded-full bg-[#5b21b6]" />
                         <span>Purple</span>
                       </div>
                     </SelectItem>
@@ -551,6 +551,48 @@ export default function SettingsPage() {
                       <div className="flex items-center space-x-2">
                         <div className="w-4 h-4 rounded-full bg-[#FD8A6B]" />
                         <span>Orange</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="blue">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-[#3b82f6]" />
+                        <span>Blue</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="green">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-[#10b981]" />
+                        <span>Green</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="teal">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-[#14b8a6]" />
+                        <span>Teal</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="pink">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-[#ec4899]" />
+                        <span>Pink</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="indigo">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-[#6366f1]" />
+                        <span>Indigo</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="red">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-[#ef4444]" />
+                        <span>Red</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="cyan">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-[#06b6d4]" />
+                        <span>Cyan</span>
                       </div>
                     </SelectItem>
                   </SelectContent>

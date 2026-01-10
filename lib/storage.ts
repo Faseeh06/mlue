@@ -309,7 +309,7 @@ export const voiceModeStorage = {
 };
 
 // Theme preference
-export type ThemeColor = 'purple' | 'orange';
+export type ThemeColor = 'purple' | 'orange' | 'blue' | 'green' | 'teal' | 'pink' | 'indigo' | 'red' | 'cyan';
 
 export const themeStorage = {
   get: (): ThemeColor => {
