@@ -1,4 +1,4 @@
-import { themeStorage, type ThemeColor } from './storage';
+import { themeStorage, colorModeStorage, type ThemeColor, type ColorMode } from './storage';
 
 // Theme color definitions
 const THEME_COLORS = {
@@ -131,4 +131,42 @@ export function getGradientColors(theme?: ThemeColor) {
     irisRgb: colors.irisRgb,
     lilacRgb: colors.lilacRgb,
   };
+}
+
+/**
+ * Apply color mode (dark/light) to the document
+ */
+export function applyColorMode(mode: ColorMode = 'light'): void {
+  if (typeof document === 'undefined') return;
+  
+  const root = document.documentElement;
+  
+  if (mode === 'dark') {
+    root.classList.add('dark');
+  } else {
+    root.classList.remove('dark');
+  }
+  
+  // Store preference
+  colorModeStorage.set(mode);
+  
+  // Dispatch custom event for components to listen
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('colorModeChanged'));
+  }
+}
+
+/**
+ * Initialize color mode on app load
+ */
+export function initializeColorMode(): void {
+  const mode = colorModeStorage.get();
+  applyColorMode(mode);
+}
+
+/**
+ * Get current color mode
+ */
+export function getCurrentColorMode(): ColorMode {
+  return colorModeStorage.get();
 }

@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 
 interface LandingHeaderProps {
   backHref?: string;
@@ -12,17 +14,37 @@ interface LandingHeaderProps {
 
 export function LandingHeader({ backHref }: LandingHeaderProps) {
   const pathname = usePathname();
+  const { isDark, colorMode } = useTheme();
+
+  // Determine which logo to use based on dark mode
+  // Also check DOM directly as fallback
+  const [logoSrc, setLogoSrc] = useState(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.classList.contains('dark') 
+        ? "/images/white.png" 
+        : "/images/mlue.png";
+    }
+    return "/images/mlue.png";
+  });
+
+  useEffect(() => {
+    // Update logo when dark mode changes
+    const isDarkMode = isDark || (typeof document !== 'undefined' && document.documentElement.classList.contains('dark'));
+    setLogoSrc(isDarkMode ? "/images/white.png" : "/images/mlue.png");
+  }, [isDark, colorMode]);
 
   return (
     <header className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-6 bg-transparent sticky top-0 z-50">
       <div className="flex items-center space-x-3">
         <Link href={backHref || "/"} className="flex items-center">
           <Image 
-            src="/images/mlue.png" 
+            key={logoSrc}
+            src={logoSrc}
             alt="Mlue" 
             width={120} 
             height={120}
             className="h-12 sm:h-16 w-auto"
+            priority
           />
         </Link>
       </div>

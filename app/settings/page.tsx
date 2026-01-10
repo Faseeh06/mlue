@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { preferencesStorage, apiKeyStorage, aiModelStorage, voiceModeStorage, themeStorage, storage, type AIModel, type VoiceMode, type ThemeColor } from "@/lib/storage";
+import { preferencesStorage, apiKeyStorage, aiModelStorage, voiceModeStorage, themeStorage, colorModeStorage, storage, type AIModel, type VoiceMode, type ThemeColor, type ColorMode } from "@/lib/storage";
 import { isWhisperAvailable } from "@/lib/whisper";
-import { applyTheme } from "@/lib/theme";
+import { applyTheme, applyColorMode } from "@/lib/theme";
 import { useTheme } from "@/hooks/use-theme";
 import LandingHeader from "@/components/common/landing-header";
-import { DollarSign, Download, Trash2, CheckCircle2, Globe, Key, Eye, EyeOff, ExternalLink, Sparkles, Mic, Palette } from "lucide-react";
+import { DollarSign, Download, Trash2, CheckCircle2, Globe, Key, Eye, EyeOff, ExternalLink, Sparkles, Mic, Palette, Moon, Sun } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const currencies = [
   { code: "USD", label: "US Dollar" },
@@ -41,6 +42,7 @@ export default function SettingsPage() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [voiceMode, setVoiceMode] = useState<VoiceMode>("browser");
   const [theme, setTheme] = useState<ThemeColor>("purple");
+  const [colorMode, setColorMode] = useState<ColorMode>("light");
 
   useEffect(() => {
     const prefs = preferencesStorage.get();
@@ -58,6 +60,10 @@ export default function SettingsPage() {
     // Load theme preference
     const themeColor = themeStorage.get();
     setTheme(themeColor);
+    
+    // Load color mode preference (dark/light)
+    const mode = colorModeStorage.get();
+    setColorMode(mode);
     
     // Load API keys (masked)
     const storedGeminiKey = apiKeyStorage.get();
@@ -116,6 +122,7 @@ export default function SettingsPage() {
       storage.remove('mlue-finance-ai-model');
       storage.remove('mlue-finance-voice-mode');
       storage.remove('mlue-finance-theme');
+      storage.remove('mlue-finance-color-mode');
       // Reload to reflect defaults
       window.location.reload();
     } catch (e) {
@@ -152,6 +159,15 @@ export default function SettingsPage() {
   const handleThemeChange = (value: ThemeColor) => {
     setTheme(value);
     applyTheme(value);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  // Handle color mode change (dark/light)
+  const handleColorModeChange = (checked: boolean) => {
+    const newMode: ColorMode = checked ? 'dark' : 'light';
+    setColorMode(newMode);
+    applyColorMode(newMode);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -597,6 +613,43 @@ export default function SettingsPage() {
                     </SelectItem>
                   </SelectContent>
                 </Select>
+                {saved && (
+                  <div className="flex items-center space-x-2 text-sm text-iris">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Saved</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
+
+          {/* Dark Mode */}
+          <Card className="p-6 bg-transparent border border-border/50 rounded-xl backdrop-blur-sm hover:border-border transition-colors">
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-iris/10 rounded-lg">
+                {colorMode === 'dark' ? (
+                  <Moon className="h-5 w-5 text-iris" />
+                ) : (
+                  <Sun className="h-5 w-5 text-iris" />
+                )}
+              </div>
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-foreground mb-1">Dark Mode</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Switch between light and dark theme appearance
+                  </p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Switch
+                    checked={colorMode === 'dark'}
+                    onCheckedChange={handleColorModeChange}
+                    aria-label="Toggle dark mode"
+                  />
+                  <span className="text-sm font-medium text-foreground">
+                    {colorMode === 'dark' ? 'Dark Mode On' : 'Light Mode On'}
+                  </span>
+                </div>
                 {saved && (
                   <div className="flex items-center space-x-2 text-sm text-iris">
                     <CheckCircle2 className="h-4 w-4" />

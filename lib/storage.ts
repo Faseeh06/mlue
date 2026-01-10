@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   AI_MODEL: 'mlue-finance-ai-model',
   VOICE_MODE: 'mlue-finance-voice-mode',
   THEME: 'mlue-finance-theme',
+  COLOR_MODE: 'mlue-finance-color-mode', // dark or light
 };
 
 // Default categories
@@ -317,5 +318,17 @@ export const themeStorage = {
   },
   set: (theme: ThemeColor): boolean => {
     return storage.set(STORAGE_KEYS.THEME, theme);
+  },
+};
+
+// Color Mode preference (dark/light)
+export type ColorMode = 'light' | 'dark';
+
+export const colorModeStorage = {
+  get: (): ColorMode => {
+    return storage.get<ColorMode>(STORAGE_KEYS.COLOR_MODE, 'light');
+  },
+  set: (mode: ColorMode): boolean => {
+    return storage.set(STORAGE_KEYS.COLOR_MODE, mode);
   },
 };
