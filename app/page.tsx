@@ -44,7 +44,7 @@ export default function Page() {
         {/* Hero Content */}
         <div className="flex-1 flex items-center justify-center px-6 py-24 relative">
           {/* Gradient blob - extends into next section */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] pointer-events-none" style={{ bottom: '-200px' }}>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[900px] h-full max-h-[900px] aspect-square pointer-events-none" style={{ bottom: '-200px' }}>
             <div 
               className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-40"
               style={{
@@ -86,7 +86,7 @@ export default function Page() {
       {/* Manifesto Section */}
       <section className="relative min-h-[80vh] flex items-center justify-center bg-background px-6 py-32 overflow-hidden">
         {/* Gradient blob - connects from hero and flows down */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none" style={{ top: '-100px' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] sm:h-[600px] aspect-[4/3] pointer-events-none" style={{ top: '-100px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
@@ -95,7 +95,7 @@ export default function Page() {
           />
         </div>
         {/* Additional gradient for flow */}
-        <div className="absolute bottom-0 right-0 w-[700px] h-[500px] pointer-events-none" style={{ bottom: '-150px' }}>
+        <div className="absolute bottom-0 right-0 w-full max-w-[700px] h-[350px] sm:h-[500px] aspect-[7/5] pointer-events-none" style={{ bottom: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
@@ -115,7 +115,7 @@ export default function Page() {
       {/* Features Section */}
       <section className="relative bg-background px-6 py-24 overflow-hidden">
         {/* Gradient blob - connects from manifesto */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none" style={{ top: '-150px' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] sm:h-[600px] aspect-[4/3] pointer-events-none" style={{ top: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
@@ -124,7 +124,7 @@ export default function Page() {
           />
         </div>
         {/* Gradient blob - flows to next section */}
-        <div className="absolute bottom-0 right-0 w-[700px] h-[500px] pointer-events-none" style={{ bottom: '-150px' }}>
+        <div className="absolute bottom-0 right-0 w-full max-w-[700px] h-[350px] sm:h-[500px] aspect-[7/5] pointer-events-none" style={{ bottom: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
@@ -183,7 +183,7 @@ export default function Page() {
       {/* Stats/Showcase Section */}
       <section className="relative bg-secondary px-6 py-24 overflow-hidden">
         {/* Gradient blob - connects from features */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none" style={{ top: '-150px' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] sm:h-[600px] aspect-[4/3] pointer-events-none" style={{ top: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
@@ -192,7 +192,7 @@ export default function Page() {
           />
         </div>
         {/* Gradient blob - flows to next section */}
-        <div className="absolute bottom-0 right-0 w-[700px] h-[500px] pointer-events-none" style={{ bottom: '-150px' }}>
+        <div className="absolute bottom-0 right-0 w-full max-w-[700px] h-[350px] sm:h-[500px] aspect-[7/5] pointer-events-none" style={{ bottom: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
@@ -221,7 +221,7 @@ export default function Page() {
       {/* Additional Features Grid */}
       <section className="relative bg-background px-6 py-24 overflow-hidden">
         {/* Gradient blob - connects from stats */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none" style={{ top: '-150px' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] sm:h-[600px] aspect-[4/3] pointer-events-none" style={{ top: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
@@ -230,7 +230,7 @@ export default function Page() {
           />
         </div>
         {/* Gradient blob - flows to CTA */}
-        <div className="absolute bottom-0 right-0 w-[700px] h-[500px] pointer-events-none" style={{ bottom: '-150px' }}>
+        <div className="absolute bottom-0 right-0 w-full max-w-[700px] h-[350px] sm:h-[500px] aspect-[7/5] pointer-events-none" style={{ bottom: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
@@ -267,7 +267,7 @@ export default function Page() {
       {/* CTA Section */}
       <section className="bg-background px-6 py-24 relative overflow-hidden">
         {/* Gradient blob - connects from previous section */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none" style={{ top: '-150px' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] sm:h-[600px] aspect-[4/3] pointer-events-none" style={{ top: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
@@ -276,7 +276,7 @@ export default function Page() {
           />
         </div>
         {/* Gradient blob - flows to footer */}
-        <div className="absolute bottom-0 right-0 w-[700px] h-[500px] pointer-events-none" style={{ bottom: '-150px' }}>
+        <div className="absolute bottom-0 right-0 w-full max-w-[700px] h-[350px] sm:h-[500px] aspect-[7/5] pointer-events-none" style={{ bottom: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
             style={{
@@ -304,7 +304,7 @@ export default function Page() {
       {/* Footer */}
       <footer className="relative bg-background px-6 py-24 border-t border-border overflow-hidden">
         {/* Gradient blob - connects from CTA */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none" style={{ top: '-150px' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] sm:h-[600px] aspect-[4/3] pointer-events-none" style={{ top: '-150px' }}>
           <div 
             className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-35"
             style={{
@@ -313,7 +313,7 @@ export default function Page() {
           />
         </div>
         {/* Final gradient blob */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] pointer-events-none">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] sm:h-[500px] aspect-[8/5] pointer-events-none">
           <div 
             className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-40"
             style={{

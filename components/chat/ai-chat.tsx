@@ -403,14 +403,14 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
   return (
     <div className="flex flex-col h-full overflow-hidden bg-transparent border border-border/50 rounded-xl backdrop-blur-sm">
       {/* Chat Header */}
-      <div className="p-6 border-b border-border bg-gradient-to-r from-iris/5 to-transparent">
-        <div className="flex items-center space-x-4">
-          <div className="p-3 bg-iris rounded-full shadow-lg shadow-iris/20">
-            <Bot className="h-6 w-6 text-white" />
+      <div className="p-3 sm:p-6 border-b border-border bg-gradient-to-r from-iris/5 to-transparent">
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="p-2 sm:p-3 bg-iris rounded-full shadow-lg shadow-iris/20 flex-shrink-0">
+            <Bot className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
           </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-serif font-semibold text-foreground mb-1">AI Finance Assistant</h3>
-            <p className="text-sm text-muted-foreground">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base sm:text-lg font-serif font-semibold text-foreground mb-1 truncate">AI Finance Assistant</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground truncate">
               {!hasApiKey ? 'API key required' : isLoading ? 'Thinking...' : `Ready (${currentModel === 'groq' ? 'Groq' : 'Gemini'})`}
             </p>
           </div>
@@ -418,19 +418,20 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
             <Button
               onClick={() => router.push('/settings')}
               size="sm"
-              className="rounded-full bg-iris text-white hover:bg-iris/90"
+              className="rounded-full bg-iris text-white hover:bg-iris/90 text-xs sm:text-sm px-3 sm:px-4 h-8 sm:h-9 flex-shrink-0"
             >
-              Add API Key
+              <span className="hidden sm:inline">Add API Key</span>
+              <span className="sm:hidden">Add</span>
             </Button>
           )}
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto scrollbar-hide p-2 sm:p-4 space-y-3 sm:space-y-4">
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
+            <div className={`max-w-[85%] sm:max-w-[80%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
               <div className={`flex items-end space-x-2 ${message.role === 'user' ? 'flex-row-reverse space-x-reverse' : 'flex-row'}`}>
                 <div className={`p-2 rounded-full ${message.role === 'user' ? 'bg-primary' : 'bg-secondary'}`}>
                   {message.role === 'user' ? (
@@ -504,8 +505,8 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
       </div>
 
       {/* Input */}
-      <div className="p-3 border-t border-border">
-        <div className="rounded-full border border-border focus-within:border-iris bg-background px-3 py-1 flex items-center">
+      <div className="p-2 sm:p-3 border-t border-border">
+        <div className="rounded-full border border-border focus-within:border-iris bg-background px-2 sm:px-3 py-1 flex items-center">
           <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
@@ -513,9 +514,9 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
             placeholder="Ask anything"
             disabled={isLoading}
             rows={2}
-            className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-0 focus:ring-0 ring-0 ring-offset-0 outline-none focus:outline-none shadow-none rounded-full font-light text-sm leading-snug resize-none min-h-[38px] max-h-[60px] py-0.5 placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-0 focus:ring-0 ring-0 ring-offset-0 outline-none focus:outline-none shadow-none rounded-full font-light text-xs sm:text-sm leading-snug resize-none min-h-[44px] sm:min-h-[38px] max-h-[60px] py-0.5 placeholder:text-muted-foreground"
           />
-          <div className="flex items-center space-x-1 pl-2">
+          <div className="flex items-center space-x-1 sm:space-x-1 pl-2 flex-shrink-0">
             <Button
               onClick={toggleMic}
               disabled={
@@ -525,24 +526,24 @@ export function AIChat({ onTransactionAdded }: AIChatProps) {
               }
               variant="ghost"
               size="sm"
-              className="h-7 w-7 p-0 hover:bg-accent rounded-full"
+              className="h-11 w-11 sm:h-9 sm:w-9 p-0 hover:bg-accent rounded-full min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0"
               title={
                 voiceMode === 'whisper' 
                   ? (!isWhisperAvailable() ? 'Groq API key required for Whisper' : (isRecording ? 'Stop recording' : 'Start voice input (Whisper)'))
                   : (!((typeof window !== 'undefined') && (((window as any).SpeechRecognition) || ((window as any).webkitSpeechRecognition))) ? 'Speech recognition not supported' : (isRecording ? 'Stop and send' : 'Start voice input (Browser)'))
               }
             >
-              {isRecording ? <MicOff className="h-3.5 w-3.5 text-foreground" /> : <Mic className="h-3.5 w-3.5 text-foreground" />}
+              {isRecording ? <MicOff className="h-5 w-5 sm:h-4 sm:w-4 text-foreground" /> : <Mic className="h-5 w-5 sm:h-4 sm:w-4 text-foreground" />}
             </Button>
             <Button
               onClick={handleSendMessage}
               disabled={!inputMessage.trim() || isLoading || !hasApiKey}
               size="sm"
               variant="default"
-              className="h-7 w-7 p-0 rounded-full"
+              className="h-11 w-11 sm:h-9 sm:w-9 p-0 rounded-full min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0"
               title={!hasApiKey ? "Add API key in Settings to send messages" : "Send"}
             >
-              <Send className="h-3.5 w-3.5" />
+              <Send className="h-5 w-5 sm:h-4 sm:w-4" />
             </Button>
           </div>
         </div>

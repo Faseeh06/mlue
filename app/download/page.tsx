@@ -21,7 +21,7 @@ export default function DownloadPage() {
         {/* Download Content */}
         <div className="flex-1 flex items-center justify-center px-6 py-24 relative">
           {/* Gradient blob */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[900px] h-full max-h-[900px] aspect-square pointer-events-none">
             <div 
               className="absolute inset-0 bg-gradient-to-b blur-3xl rounded-full opacity-40"
               style={{
@@ -30,7 +30,7 @@ export default function DownloadPage() {
             />
           </div>
           {/* Additional gradient */}
-          <div className="absolute bottom-0 right-0 w-[700px] h-[500px] pointer-events-none">
+          <div className="absolute bottom-0 right-0 w-full max-w-[700px] h-[350px] sm:h-[500px] aspect-[7/5] pointer-events-none">
             <div 
               className="absolute inset-0 bg-gradient-to-tr blur-3xl rounded-full opacity-30"
               style={{

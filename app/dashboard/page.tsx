@@ -199,12 +199,13 @@ function DashboardPageContent() {
 
       {/* Mobile Add Button */}
       {currentView === 'full' && (
-        <Link href="/transaction" className="fixed bottom-6 right-6 sm:hidden z-[100]">
+        <Link href="/transaction" className="fixed bottom-4 right-4 sm:hidden z-[100]">
           <Button 
             size="lg"
-            className="rounded-full shadow-lg bg-iris text-white hover:bg-iris/90 h-12 w-12 p-0"
+            className="rounded-full shadow-lg bg-iris text-white hover:bg-iris/90 h-14 w-14 p-0 min-h-[56px] min-w-[56px]"
+            aria-label="Add Transaction"
           >
-            <Plus className="h-5 w-5" />
+            <Plus className="h-6 w-6" />
           </Button>
         </Link>
       )}
